@@ -122,7 +122,7 @@
         const startDatePickerInstance = flatpickr(startDateInput, {
             dateFormat: "Y-m-d",
             altInput: true,
-            altFormat: "d de F de Y",
+            altFormat: "d \\de F \\de Y",
             locale: "pt",
             onChange: function(selectedDates) {
                 if (endDatePickerInstance) {
@@ -133,7 +133,7 @@
         endDatePickerInstance = flatpickr(endDateInput, {
             dateFormat: "Y-m-d",
             altInput: true,
-            altFormat: "d de F de Y",
+            altFormat: "d \\de F \\de Y",
             locale: "pt",
         });
 

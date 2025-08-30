@@ -160,7 +160,7 @@
         // --- UI FUNCTIONS ---
         const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
 
-        flatpickr("#travel-date", { dateFormat: "Y-m-d", altInput: true, altFormat: "d de F de Y", locale: "pt" });
+        flatpickr("#travel-date", { dateFormat: "Y-m-d", altInput: true, altFormat: "d \\de F \\de Y", locale: "pt" });
         flatpickr("#appointment-time", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, locale: "pt" });
 
         function addCompanionField(name = '') {

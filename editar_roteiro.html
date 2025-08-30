@@ -148,7 +148,7 @@
         // --- UI FUNCTIONS ---
         const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
         
-        flatpickr(itineraryDateInput, { dateFormat: "Y-m-d", altInput: true, altFormat: "d de F de Y", locale: "pt" });
+        flatpickr(itineraryDateInput, { dateFormat: "Y-m-d", altInput: true, altFormat: "d \\de F \\de Y", locale: "pt" });
         flatpickr(itineraryTimeInput, { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, locale: "pt" });
 
         function setupAutocomplete(input, suggestionsDiv, data) {
