@@ -24,13 +24,13 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 <span class="mx-3">Cadastro de Viagem</span>
             </a>
-            <a href="gerenciar_cidades.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
-                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span class="mx-3">Gerenciar Cidades</span>
-            </a>
             <a href="roteiro.html" class="flex items-center py-2 px-4 mt-4 text-gray-700 bg-gray-100 rounded-lg border-r-4 border-blue-500">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
                 <span class="mx-3 font-semibold">Roteiro de Viagens</span>
+            </a>
+            <a href="solicitacoes_pendentes.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="mx-3">Solicitações Pendentes</span>
             </a>
         </nav>
     </div>
@@ -91,13 +91,23 @@
         const filterDriver = document.getElementById('filter-driver');
 
         const ITINERARIES_KEY = 'travelItineraries';
-        const CITIES_STORAGE_KEY = 'travelAppCities';
-
+        
         // Autocomplete para destino
         const suggestionsContainer = document.getElementById('city-suggestions');
 
-        function getCities() { return JSON.parse(localStorage.getItem(CITIES_STORAGE_KEY)) || []; }
-        const allCities = getCities();
+        const allCities = [
+            "Adamantina - SP", "Alto Garças - MT", "Álvares Machado - SP", "Araçatuba - SP",
+            "Assis - SP", "Avaré - SP", "Barretos - SP", "Bauru - SP", "Botucatu - SP",
+            "Campinas - SP", "Cândido Mota - SP", "Chavantes - SP", "Fernandópolis - SP",
+            "Franca - SP", "Garça - SP", "Herculândia - SP", "Ilha Solteira - SP", "Jales - SP",
+            "Jaú - SP", "Jundiaí - SP", "Londrina - PR", "Marialva - PR", "Marília - SP",
+            "Osvaldo Cruz - SP", "Ourinhos - SP", "Palmital - SP", "Paraguaçu Paulista - SP",
+            "Pardinho - SP", "Penápolis - SP", "Pirapozinho - SP", "Presidente Prudente - SP",
+            "Presidente Venceslau - SP", "Rancharia - SP", "Ribeirão Preto - SP", "Rosana - SP",
+            "Salto - SP", "Santa Cruz do Rio Pardo - SP", "Santos - SP",
+            "São José do Rio Preto - SP", "São Paulo - SP", "Sorocaba - SP", "Tarumã - SP",
+            "Taubaté - SP", "Tupã - SP", "Valinhos - SP"
+        ];
 
         filterDestination.addEventListener('input', () => {
             const query = filterDestination.value.toUpperCase();
@@ -195,3 +205,4 @@
 </script>
 </body>
 </html>
+

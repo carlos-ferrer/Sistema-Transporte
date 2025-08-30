@@ -13,21 +13,21 @@
     <!-- Sidebar -->
     <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20">
         <div class="flex items-center border-b pb-4">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             <h1 class="text-xl font-bold text-gray-800 ml-3">Sistema de Viagem</h1>
         </div>
         <nav class="mt-6">
             <a href="cadastro_viagem.html" class="flex items-center py-2 px-4 text-gray-600 rounded-lg hover:bg-gray-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 <span class="mx-3">Cadastro de Viagem</span>
             </a>
-            <a href="gerenciar_cidades.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
-                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span class="mx-3">Gerenciar Cidades</span>
+            <a href="roteiro.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
+                <span class="mx-3">Roteiro de Viagens</span>
             </a>
-            <a href="roteiro.html" class="flex items-center py-2 px-4 mt-4 text-gray-700 bg-gray-100 rounded-lg border-r-4 border-blue-500">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
-                <span class="mx-3 font-semibold">Roteiro de Viagens</span>
+            <a href="solicitacoes_pendentes.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="mx-3">Solicitações Pendentes</span>
             </a>
         </nav>
     </div>
@@ -40,7 +40,7 @@
             </button>
         </header>
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
-            <div class="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-lg mx-auto">
+            <div class="w-full bg-white p-6 rounded-2xl shadow-lg mx-auto">
                 <!-- Seletor de Data -->
                 <div class="mb-6">
                     <label for="itinerary-date" class="block text-lg font-semibold text-gray-700 mb-2">1. Selecione a Data da Viagem</label>
@@ -60,12 +60,12 @@
                     <h2 class="text-lg font-semibold text-gray-700 mb-2">3. Preencha os Detalhes do Roteiro</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="vehicle" class="block text-sm font-medium text-gray-600 mb-1">Veículo <span class="text-red-500">*</span></label>
-                            <input type="text" id="vehicle" placeholder="Ex: Ambulância ABC-1234" required class="w-full p-2 border rounded-lg">
+                            <label for="vehicle" class="block text-sm font-medium text-gray-600 mb-1">Veículo</label>
+                            <input type="text" id="vehicle" placeholder="Ex: Ambulância ABC-1234" class="w-full p-2 border rounded-lg">
                         </div>
                         <div>
-                            <label for="driver" class="block text-sm font-medium text-gray-600 mb-1">Motorista <span class="text-red-500">*</span></label>
-                            <input type="text" id="driver" placeholder="Nome do motorista" required class="w-full p-2 border rounded-lg">
+                            <label for="driver" class="block text-sm font-medium text-gray-600 mb-1">Motorista</label>
+                            <input type="text" id="driver" placeholder="Nome do motorista" class="w-full p-2 border rounded-lg">
                         </div>
                     </div>
                 </div>
@@ -82,6 +82,7 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Lógica do Menu
         const menuButton = document.getElementById('menu-button');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
@@ -94,79 +95,84 @@
             overlay.classList.toggle('hidden');
         });
 
-        const dateInput = document.getElementById('itinerary-date');
-        const patientsListDiv = document.getElementById('pending-patients-list');
-        const saveBtn = document.getElementById('save-itinerary-btn');
+        const itineraryDate = document.getElementById('itinerary-date');
+        const patientsList = document.getElementById('pending-patients-list');
+        const saveButton = document.getElementById('save-itinerary-btn');
         const vehicleInput = document.getElementById('vehicle');
         const driverInput = document.getElementById('driver');
 
         const REQUESTS_KEY = 'travelRequests';
         const ITINERARIES_KEY = 'travelItineraries';
 
-        dateInput.addEventListener('change', () => {
-            const selectedDate = dateInput.value;
+        itineraryDate.addEventListener('change', () => {
+            const selectedDate = itineraryDate.value;
             if (!selectedDate) {
-                patientsListDiv.innerHTML = '<p class="text-gray-500">Selecione uma data para ver os pacientes com viagens pendentes.</p>';
-                return;
-            }
-            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
-            const pendingRequests = allRequests.filter(req => req.travelDate === selectedDate && req.status === 'Pendente');
-
-            patientsListDiv.innerHTML = '';
-            if (pendingRequests.length === 0) {
-                patientsListDiv.innerHTML = `<p class="text-gray-500">Nenhum paciente pendente para a data ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR')}.</p>`;
+                patientsList.innerHTML = '<p class="text-gray-500">Selecione uma data para ver os pacientes com viagens pendentes.</p>';
                 return;
             }
             
+            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+            const pendingRequests = allRequests.filter(req => req.status === 'Pendente' && req.travelDate === selectedDate);
+
+            patientsList.innerHTML = '';
+            if (pendingRequests.length === 0) {
+                patientsList.innerHTML = '<p class="text-gray-500">Nenhuma solicitação pendente para esta data.</p>';
+                return;
+            }
+
             pendingRequests.forEach(req => {
                 const patientDiv = document.createElement('div');
-                patientDiv.className = 'flex items-center justify-between p-3 border-b last:border-b-0';
+                patientDiv.className = 'flex items-center justify-between p-3 bg-white rounded-lg border mb-2';
                 patientDiv.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="patient-${req.id}" data-request-id="${req.id}" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        <label for="patient-${req.id}" class="flex flex-col cursor-pointer">
-                            <span class="font-semibold text-gray-800">${req.patientName}</span>
-                            <span class="text-sm text-gray-500">${req.city} - ${req.location}</span>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="patient-${req.id}" value="${req.id}" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-4">
+                        <label for="patient-${req.id}" class="flex-grow">
+                            <span class="font-bold text-gray-800">${req.patientName}</span>
+                            <p class="text-sm text-gray-500">${req.city} - ${req.location} (${req.appointmentTime})</p>
                         </label>
                     </div>
-                    <div class="text-right">
-                         <p class="text-sm font-medium text-gray-700">${req.appointmentTime}</p>
-                         <p class="text-xs text-white rounded-full px-2 py-0.5 inline-block ${req.transportType === 'Ambulância' ? 'bg-red-500' : 'bg-blue-500'}">${req.transportType}</p>
-                    </div>
+                    <span class="text-sm font-medium text-white ${req.transportType === 'Ambulância' ? 'bg-red-500' : (req.transportType === 'Exclusivo' ? 'bg-yellow-500' : 'bg-blue-500')} px-2 py-1 rounded-full">${req.transportType}</span>
                 `;
-                patientsListDiv.appendChild(patientDiv);
+                patientsList.appendChild(patientDiv);
             });
         });
 
-        saveBtn.addEventListener('click', () => {
-            const selectedDate = dateInput.value;
-            const vehicle = vehicleInput.value.trim();
-            const driver = driverInput.value.trim();
-            const selectedCheckboxes = document.querySelectorAll('#pending-patients-list input[type="checkbox"]:checked');
-
-            if (!selectedDate || !vehicle || !driver || selectedCheckboxes.length === 0) {
-                alert('Por favor, preencha todos os campos obrigatórios e selecione ao menos um paciente.');
+        saveButton.addEventListener('click', () => {
+            const selectedPatientIds = Array.from(patientsList.querySelectorAll('input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
+            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+            
+            if (selectedPatientIds.length === 0) {
+                alert('Selecione ao menos um paciente para o roteiro.');
+                return;
+            }
+            if (!vehicleInput.value.trim() || !driverInput.value.trim()) {
+                alert('Preencha os campos de Veículo e Motorista.');
                 return;
             }
 
-            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
-            const selectedPatientIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.dataset.requestId));
-
-            const patientsForItinerary = [];
+            const patientsForItinerary = allRequests.filter(req => selectedPatientIds.includes(req.id));
+            
+            // Atualiza status dos selecionados para 'Agendado'
             allRequests.forEach(req => {
                 if (selectedPatientIds.includes(req.id)) {
                     req.status = 'Agendado';
-                    patientsForItinerary.push(req);
                 }
             });
+            localStorage.setItem(REQUESTS_KEY, JSON.stringify(allRequests));
+
+            // Cria o novo roteiro
+            const newItinerary = {
+                id: Date.now(),
+                date: itineraryDate.value,
+                vehicle: vehicleInput.value.trim(),
+                driver: driverInput.value.trim(),
+                patients: patientsForItinerary
+            };
             
-            const newItinerary = { id: Date.now(), date: selectedDate, vehicle, driver, patients: patientsForItinerary };
             const allItineraries = JSON.parse(localStorage.getItem(ITINERARIES_KEY)) || [];
             allItineraries.push(newItinerary);
-
-            localStorage.setItem(REQUESTS_KEY, JSON.stringify(allRequests));
             localStorage.setItem(ITINERARIES_KEY, JSON.stringify(allItineraries));
-
+            
             alert('Roteiro salvo com sucesso!');
             window.location.href = 'roteiro.html';
         });
@@ -174,3 +180,4 @@
 </script>
 </body>
 </html>
+
