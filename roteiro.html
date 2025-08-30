@@ -13,11 +13,26 @@
         .autocomplete-suggestion { padding: 10px; cursor: pointer; }
         .autocomplete-suggestion:hover { background-color: #f0f0f0; }
         .modal { transition: opacity 0.25s ease; }
+        /* Estilos de impressão */
+        @media print {
+            body { visibility: hidden !important; }
+            #print-iframe {
+                visibility: visible !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+            #print-iframe body {
+                visibility: visible !important;
+                background: white;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
 <div class="flex h-screen bg-gray-200 font-sans">
-    <!-- Sidebar -->
     <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20">
         <div class="flex items-center border-b pb-4">
             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -46,7 +61,6 @@
             </a>
         </nav>
     </div>
-    <!-- Content -->
     <div class="flex-1 flex flex-col">
         <header class="bg-white shadow flex items-center justify-between p-4">
             <h1 class="text-xl font-bold text-gray-800">Roteiro de Viagens</h1>
@@ -62,7 +76,6 @@
                         + Novo Roteiro
                     </a>
                 </div>
-                <!-- Filtros -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg border">
                     <input type="text" id="filter-date" class="p-2 border rounded-lg bg-white" placeholder="Filtrar por data">
                     <div class="relative">
@@ -78,7 +91,6 @@
                         <div id="driver-suggestions" class="autocomplete-suggestions hidden"></div>
                     </div>
                 </div>
-                <!-- Lista de Roteiros -->
                 <div id="itineraries-list" class="space-y-4">
                     <p class="text-center text-gray-500 py-4">A carregar roteiros...</p>
                 </div>
@@ -88,14 +100,11 @@
     <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden"></div>
 </div>
 
-<!-- Modal Visualizar -->
 <div id="view-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
     <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" id="view-modal-content">
-        <!-- Conteúdo do Modal -->
-    </div>
+        </div>
 </div>
 
-<!-- Modal Confirmação de Exclusão -->
 <div id="delete-confirm-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
     <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center">
         <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
@@ -107,11 +116,11 @@
     </div>
 </div>
 
-<!-- Flatpickr JS -->
+<iframe id="print-iframe" style="display:none;"></iframe>
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
 
-<!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -124,6 +133,7 @@
         const filterDate = document.getElementById('filter-date'), filterVehicle = document.getElementById('filter-vehicle'), filterDestination = document.getElementById('filter-destination'), filterDriver = document.getElementById('filter-driver');
         const viewModal = document.getElementById('view-modal'), viewModalContent = document.getElementById('view-modal-content');
         const deleteConfirmModal = document.getElementById('delete-confirm-modal'), cancelDeleteBtn = document.getElementById('cancel-delete-btn'), confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const printIframe = document.getElementById('print-iframe');
 
         // --- DATA ---
         const CITIES = ["Adamantina - SP", "Alto Garças - MT", "Álvares Machado - SP", "Araçatuba - SP", "Assis - SP", "Avaré - SP", "Barretos - SP", "Bauru - SP", "Botucatu - SP", "Campinas - SP", "Cândido Mota - SP", "Chavantes - SP", "Fernandópolis - SP", "Franca - SP", "Garça - SP", "Herculândia - SP", "Ilha Solteira - SP", "Jales - SP", "Jaú - SP", "Jundiaí - SP", "Londrina - PR", "Marialva - PR", "Marília - SP", "Osvaldo Cruz - SP", "Ourinhos - SP", "Palmital - SP", "Paraguaçu Paulista - SP", "Pardinho - SP", "Penápolis - SP", "Pirapozinho - SP", "Presidente Prudente - SP", "Presidente Venceslau - SP", "Rancharia - SP", "Ribeirão Preto - SP", "Rosana - SP", "Salto - SP", "Santa Cruz do Rio Pardo - SP", "Santos - SP", "São José do Rio Preto - SP", "São Paulo - SP", "Sorocaba - SP", "Tarumã - SP", "Taubaté - SP", "Tupã - SP", "Valinhos - SP"];
@@ -213,6 +223,7 @@
                         <button data-id="${itinerary.id}" class="view-btn bg-gray-200 text-gray-700 hover:bg-gray-300 font-semibold py-2 px-4 rounded-lg">Visualizar</button>
                         <a href="editar_roteiro.html?id=${itinerary.id}" class="bg-yellow-500 text-white hover:bg-yellow-600 font-semibold py-2 px-4 rounded-lg">Editar</a>
                         <button data-id="${itinerary.id}" class="delete-btn bg-red-600 text-white hover:bg-red-700 font-semibold py-2 px-4 rounded-lg">Excluir</button>
+                        <button data-id="${itinerary.id}" class="print-btn bg-green-600 text-white hover:bg-green-700 font-semibold py-2 px-4 rounded-lg">Imprimir</button>
                     </div>
                 `;
                 itinerariesListDiv.appendChild(card);
@@ -257,6 +268,70 @@
             openModal(viewModal);
         }
 
+        function createPrintContent(itineraryId) {
+            const itinerary = allItineraries.find(i => i.id === itineraryId);
+            if (!itinerary) return null;
+            const patientsInItinerary = allRequests.filter(req => itinerary.patientIds.includes(req.id));
+            const formattedDate = new Date(itinerary.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+            let printHTML = `
+                <div style="font-family: 'Inter', sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+                    <h1 style="font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 1rem;">Roteiro de Viagem</h1>
+                    <div style="border: 2px solid #3b82f6; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem;">
+                        <p style="font-size: 1.125rem; font-weight: bold; color: #3b82f6;">Data e Hora: ${formattedDate} - ${itinerary.time}</p>
+                        <p style="margin-top: 0.5rem;"><strong>Motorista:</strong> ${itinerary.driver}</p>
+                        <p><strong>Veículo:</strong> ${itinerary.vehicle}</p>
+                    </div>
+                    <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Pacientes e Detalhes</h2>
+                    <div style="border-top: 1px solid #ccc;">
+                        ${patientsInItinerary.map(p => `
+                            <div style="padding: 1rem 0; border-bottom: 1px dashed #ddd;">
+                                <p style="font-weight: bold;">Paciente: ${p.patientName}</p>
+                                <p style="margin-top: 0.25rem;"><strong>Cidade de Destino:</strong> ${p.city} (${p.location})</p>
+                                <p><strong>Local de Embarque:</strong> ${p.boardingLocation}</p>
+                                <p><strong>Hora da Consulta:</strong> ${p.appointmentTime}</p>
+                                <p><strong>Acompanhantes:</strong> ${p.companions.length > 0 ? p.companions.join(', ') : 'Nenhum'}</p>
+                                <p style="margin-top: 0.5rem;"><strong>Observações:</strong> ${p.observations || 'Nenhuma'}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            return printHTML;
+        }
+
+        async function showPrintView(itineraryId) {
+            const printContent = createPrintContent(itineraryId);
+            if (!printContent) {
+                alert("Roteiro não encontrado ou sem pacientes para imprimir.");
+                return;
+            }
+
+            const iframe = printIframe;
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Roteiro de Viagem</title>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Inter', sans-serif; }
+                    </style>
+                </head>
+                <body>
+                    ${printContent}
+                </body>
+                </html>
+            `);
+            doc.close();
+
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        }
+
         async function deleteItinerary() {
             if (!itineraryToDeleteId) return;
             const itinerary = allItineraries.find(i => i.id === itineraryToDeleteId);
@@ -288,11 +363,14 @@
         itinerariesListDiv.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.view-btn');
             const deleteBtn = e.target.closest('.delete-btn');
+            const printBtn = e.target.closest('.print-btn');
+            
             if (viewBtn) showViewModal(viewBtn.dataset.id);
             if (deleteBtn) {
                 itineraryToDeleteId = deleteBtn.dataset.id;
                 openModal(deleteConfirmModal);
             }
+            if (printBtn) showPrintView(printBtn.dataset.id);
         });
 
         viewModal.addEventListener('click', (e) => { 
@@ -300,7 +378,7 @@
         });
         cancelDeleteBtn.addEventListener('click', () => { closeModal(deleteConfirmModal); itineraryToDeleteId = null; });
         confirmDeleteBtn.addEventListener('click', deleteItinerary);
-        
+
         // --- FIREBASE INITIALIZATION & REALTIME LISTENERS ---
         async function initializeFirebase() {
             try {
@@ -357,4 +435,3 @@
 </script>
 </body>
 </html>
-

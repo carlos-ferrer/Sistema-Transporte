@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Novo Roteiro</title>
+    <title>Editar Roteiro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -16,7 +16,6 @@
 </head>
 <body class="bg-gray-100">
 <div class="flex h-screen bg-gray-200 font-sans">
-    <!-- Sidebar -->
     <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20">
        <div class="flex items-center border-b pb-4">
              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -45,20 +44,22 @@
             </a>
         </nav>
     </div>
-    <!-- Content -->
     <div class="flex-1 flex flex-col">
          <header class="bg-white shadow flex items-center justify-between p-4">
-            <h1 class="text-xl font-bold text-gray-800">Criar Novo Roteiro</h1>
+            <h1 class="text-xl font-bold text-gray-800">Editar Roteiro</h1>
             <button id="menu-button" class="text-gray-500 focus:outline-none lg:hidden">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </header>
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
-            <div class="w-full bg-white p-6 rounded-2xl shadow-lg mx-auto">
+             <div id="loading-state" class="text-center p-8">
+                <p class="text-gray-500">A carregar dados do roteiro...</p>
+            </div>
+            <div id="form-container" class="hidden w-full bg-white p-6 rounded-2xl shadow-lg mx-auto">
                 <div class="mb-6">
                     <label for="transport-type" class="block text-lg font-semibold text-gray-700 mb-2">1. Selecione o Tipo de Transporte</label>
                     <select id="transport-type" class="w-full md:w-1/3 p-3 border rounded-lg bg-gray-50">
-                        <option value="" disabled selected>Escolha um tipo...</option>
+                        <option value="" disabled>Escolha um tipo...</option>
                         <option value="Ambulância">Ambulância</option>
                         <option value="Coletivo">Coletivo</option>
                         <option value="Exclusivo">Exclusivo</option>
@@ -66,17 +67,20 @@
                 </div>
                 
                 <div class="mb-6">
-                    <label for="itinerary-date" class="block text-lg font-semibold text-gray-700 mb-2">2. Selecione a Data e Hora da Viagem</label>
+                    <label for="itinerary-details" class="block text-lg font-semibold text-gray-700 mb-2">2. Selecione a Data e Destino</label>
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="itinerary-date" placeholder="Selecione a data" class="w-full p-3 border rounded-lg bg-white">
-                        <input type="text" id="itinerary-time" placeholder="Selecione a hora" class="w-full p-3 border rounded-lg bg-white">
+                        <div class="relative">
+                            <input type="text" id="itinerary-city" placeholder="Selecione o destino..." class="w-full p-3 border rounded-lg bg-white" autocomplete="off">
+                            <div id="city-suggestions" class="autocomplete-suggestions hidden"></div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-700 mb-2">3. Selecione os Pacientes para este Roteiro</h2>
                     <div id="pending-patients-list" class="max-h-96 overflow-y-auto border rounded-lg p-4 bg-gray-50">
-                       <p class="text-gray-500">Selecione o tipo de transporte e a data para ver os pacientes.</p>
+                       <p class="text-gray-500">A carregar pacientes...</p>
                     </div>
                 </div>
 
@@ -93,12 +97,16 @@
                             <input type="text" id="driver" placeholder="Selecione um motorista..." class="w-full p-3 border rounded-lg bg-gray-50" autocomplete="off">
                              <div id="driver-suggestions" class="autocomplete-suggestions hidden"></div>
                         </div>
+                         <div class="md:col-span-2">
+                             <label for="itinerary-time" class="block text-sm font-medium text-gray-600 mb-1">Hora da Viagem</label>
+                            <input type="text" id="itinerary-time" placeholder="Selecione a hora" class="w-full p-3 border rounded-lg bg-white">
+                        </div>
                     </div>
                 </div>
                 
                 <div class="flex justify-end gap-4 border-t pt-6">
                     <a href="roteiro.html" class="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300">Cancelar</a>
-                    <button id="save-itinerary-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">Salvar Roteiro</button>
+                    <button id="save-itinerary-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">Salvar Alterações</button>
                 </div>
                 <p id="error-message" class="text-red-500 text-center mt-4 hidden"></p>
             </div>
@@ -107,28 +115,28 @@
     <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden"></div>
 </div>
 
-<!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
 
-<!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, writeBatch, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     document.addEventListener('DOMContentLoaded', () => {
         // --- UI ELEMENTS (RUNS FIRST) ---
         const menuButton = document.getElementById('menu-button'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay');
+        const loadingState = document.getElementById('loading-state'), formContainer = document.getElementById('form-container');
         const transportTypeSelect = document.getElementById('transport-type');
         const itineraryDateInput = document.getElementById('itinerary-date');
-        const itineraryTimeInput = document.getElementById('itinerary-time');
+        const itineraryCityInput = document.getElementById('itinerary-city');
         const patientsListDiv = document.getElementById('pending-patients-list');
         const vehicleInput = document.getElementById('vehicle'), vehicleSuggestions = document.getElementById('vehicle-suggestions');
         const driverInput = document.getElementById('driver'), driverSuggestions = document.getElementById('driver-suggestions');
         const saveBtn = document.getElementById('save-itinerary-btn');
         const errorMessage = document.getElementById('error-message');
-
+        const itineraryTimeInput = document.getElementById('itinerary-time');
+        
         // --- DATA ---
         const DRIVERS = ["A definir", "Ademir Pacheco 1", "Ademir Pacheco 2", "Ademir Pacheco 3", "Adilson Adolfo Itelvino 1", "Adilson Adolfo Itelvino 2", "Adilson Adolfo Itelvino 3", "Adriano Aparecido Paschoa 1", "Adriano Aparecido Paschoa 2", "Adriano Aparecido Paschoa 3", "Almir Rogerio da Silva 1", "Almir Rogerio da Silva 2", "Almir Rogerio da Silva 3", "Carlos Antonio Rocha 1", "Carlos Antonio Rocha 2", "Carlos Antonio Rocha 3", "Claudio Rodrigues Santana 1", "Claudio Rodrigues Santana 2", "Claudio Rodrigues Santana 3", "Daniel Ricardo Pontes 1", "Daniel Ricardo Pontes 2", "Daniel Ricardo Pontes 3", "Jefferson Sales Prado 1", "Jefferson Sales Prado 2", "Jefferson Sales Prado 3", "Leandro Muniz Balbino 1", "Leandro Muniz Balbino 2", "Leandro Muniz Balbino 3", "Marcelo Dias Paiao 1", "Marcelo Dias Paiao 2", "Marcelo Dias Paiao 3", "Marcio Antonio dos Reis 1", "Marcio Antonio dos Reis 2", "Marcio Antonio dos Reis 3", "Marcos Aurelio de Oliveira 1", "Marcos Aurelio de Oliveira 2", "Marcos Aurelio de Oliveira 3", "Paulo Cesar Rosa de Barros 1", "Paulo Cesar Rosa de Barros 2", "Paulo Cesar Rosa de Barros 3", "Samara Batista da Silva 1", "Samara Batista da Silva 2", "Samara Batista da Silva 3", "Sebastiao Aparecido Pereira 1", "Sebastiao Aparecido Pereira 2", "Sebastiao Aparecido Pereira 3", "Silvio Andrade Garcia 1", "Silvio Andrade Garcia 2", "Silvio Andrade Garcia 3", "Valmir de Paula Ribeiro 1", "Valmir de Paula Ribeiro 2", "Valmir de Paula Ribeiro 3"];
         const FROTA_VEHICLES = ["Frota 306 - BNZ-3793", "Frota 318 - EGI-6209", "Frota 372 - FRU-2815", "Frota 392 - GCH-7877", "Frota 396 - FTS-1237", "Frota 397 - FOE-7011", "Frota 418 - GBX-4239", "Frota 419 - GDY-7265", "Frota 426 - FXQ-5064", "Frota 428 - GEB-8322", "Frota 429 - GBT-5687", "Frota 435 - ESM-7966", "Frota 439 - ERD-0542", "Frota 448 - FSM-6673", "Frota 454 - FUK-8A34", "Frota 455 - FSA-8F66", "Frota 462 - CNR-6C51", "Frota 463 - EOJ-9C01", "Frota 467 - GBO-8C25", "Frota 470 - EWZ-1C33", "Frota 480 - FUH-5H54", "Frota 481 - FWO-6F86", "Frota 482 - FNT-3C46", "Frota 483 - FYO-1F74", "Frota 494 - FRC-9172", "Frota 495 - FUH-5J32", "Frota 498 - FST-1A72", "Frota 503 - FJF-5A63", "Frota 515 - GDY-4A91", "Frota 516 - FXC-3E81", "Frota 537 - STU-1J61", "Frota 538 - STJ-2G66", "Frota 547 - FQY-0I61", "Frota 548 - SUM-0E46", "Frota 555 - FCQ-2H31", "Frota 556 - EXF-1H41", "Frota 557 - TJM-3B92", "Frota 558 - TLA-0E43", "Frota 569 - TKE-9F75"];
@@ -141,9 +149,14 @@
                 ...Array.from({ length: 3 }, (_, i) => `A definir - Hemodiálise ${i + 1}`),
             ]
         };
-        let allPendingRequests = [];
+        const CITIES = ["Adamantina - SP", "Alto Garças - MT", "Álvares Machado - SP", "Araçatuba - SP", "Assis - SP", "Avaré - SP", "Barretos - SP", "Bauru - SP", "Botucatu - SP", "Campinas - SP", "Cândido Mota - SP", "Chavantes - SP", "Fernandópolis - SP", "Franca - SP", "Garça - SP", "Herculândia - SP", "Ilha Solteira - SP", "Jales - SP", "Jaú - SP", "Jundiaí - SP", "Londrina - PR", "Marialva - PR", "Marília - SP", "Osvaldo Cruz - SP", "Ourinhos - SP", "Palmital - SP", "Paraguaçu Paulista - SP", "Pardinho - SP", "Penápolis - SP", "Pirapozinho - SP", "Presidente Prudente - SP", "Presidente Venceslau - SP", "Rancharia - SP", "Ribeirão Preto - SP", "Rosana - SP", "Salto - SP", "Santa Cruz do Rio Pardo - SP", "Santos - SP", "São José do Rio Preto - SP", "São Paulo - SP", "Sorocaba - SP", "Tarumã - SP", "Taubaté - SP", "Tupã - SP", "Valinhos - SP"];
+
+        let allRequests = [];
         let allItineraries = [];
         let db;
+        const itineraryId = new URLSearchParams(window.location.search).get('id');
+        let currentItineraryPatients = [];
+        let initialItineraryData = null;
 
         // --- UI FUNCTIONS ---
         const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
@@ -163,7 +176,7 @@
                         const div = document.createElement('div');
                         div.textContent = item;
                         div.className = 'autocomplete-suggestion';
-                        div.addEventListener('click', () => { input.value = item; suggestionsDiv.classList.add('hidden'); });
+                        div.addEventListener('click', () => { input.value = item; suggestionsDiv.classList.add('hidden'); renderPatientsList(); });
                         suggestionsDiv.appendChild(div);
                     });
                 } else {
@@ -173,29 +186,35 @@
             document.addEventListener('click', (e) => { if (e.target !== input) suggestionsDiv.classList.add('hidden'); });
         }
 
-        function renderPendingPatients() {
+        // Função para renderizar a lista de pacientes com base no roteiro e na data
+        function renderPatientsList() {
             const selectedDate = itineraryDateInput.value;
             const transportType = transportTypeSelect.value;
+            const selectedCity = itineraryCityInput.value;
             patientsListDiv.innerHTML = '';
 
-            if (!selectedDate || !transportType) {
-                patientsListDiv.innerHTML = '<p class="text-gray-500">Selecione o tipo de transporte e a data para ver os pacientes.</p>';
+            if (!selectedDate || !transportType || !selectedCity) {
+                patientsListDiv.innerHTML = '<p class="text-gray-500">Selecione o tipo de transporte, data e destino para ver os pacientes.</p>';
                 return;
             }
 
-            const filteredPatients = allPendingRequests.filter(p => p.travelDate === selectedDate && p.transportType === transportType);
+            const patientsToDisplay = allRequests.filter(p => 
+                (p.travelDate === selectedDate && p.transportType === transportType && p.city === selectedCity && p.status === 'Pendente') ||
+                (currentItineraryPatients.some(cip => cip.id === p.id))
+            ).sort((a, b) => a.appointmentTime.localeCompare(b.appointmentTime));
             
-            if (filteredPatients.length === 0) {
-                patientsListDiv.innerHTML = `<p class="text-gray-500">Nenhum paciente pendente para ${transportType} nesta data.</p>`;
+            if (patientsToDisplay.length === 0) {
+                patientsListDiv.innerHTML = `<p class="text-gray-500">Nenhum paciente pendente para ${transportType} em ${selectedCity} nesta data.</p>`;
                 return;
             }
 
-            filteredPatients.forEach(patient => {
+            patientsToDisplay.forEach(patient => {
                 const patientElement = document.createElement('div');
                 patientElement.className = 'p-2 border-b';
+                const isChecked = currentItineraryPatients.some(cip => cip.id === patient.id);
                 patientElement.innerHTML = `
                     <label class="flex items-center space-x-3">
-                        <input type="checkbox" value="${patient.id}" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <input type="checkbox" value="${patient.id}" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" ${isChecked ? 'checked' : ''}>
                         <span>
                             <strong>${patient.patientName}</strong> - ${patient.appointmentTime} - ${patient.city} (${patient.location})
                         </span>
@@ -208,19 +227,36 @@
         function updateVehicleOptions() {
             const transportType = transportTypeSelect.value;
             const options = VEHICLE_OPTIONS[transportType] || [];
-            vehicleInput.value = '';
             setupAutocomplete(vehicleInput, vehicleSuggestions, options);
+        }
+
+        function populateForm(itineraryData) {
+            itineraryDateInput._flatpickr.setDate(itineraryData.date);
+            itineraryTimeInput._flatpickr.setDate(itineraryData.time);
+            
+            transportTypeSelect.value = itineraryData.transportType;
+            vehicleInput.value = itineraryData.vehicle;
+            driverInput.value = itineraryData.driver;
+            itineraryCityInput.value = itineraryData.destinations[0]; // Assume 1 destino por roteiro para simplificar
+            
+            updateVehicleOptions();
+            renderPatientsList();
+
+            loadingState.classList.add('hidden');
+            formContainer.classList.remove('hidden');
         }
 
         // --- EVENT LISTENERS ---
         if (menuButton) menuButton.addEventListener('click', toggleMenu);
         if (overlay) overlay.addEventListener('click', toggleMenu);
         transportTypeSelect.addEventListener('change', () => {
-            renderPendingPatients();
             updateVehicleOptions();
+            renderPatientsList();
         });
-        itineraryDateInput.addEventListener('change', renderPendingPatients);
-
+        itineraryDateInput.addEventListener('change', renderPatientsList);
+        itineraryCityInput.addEventListener('input', renderPatientsList);
+        itineraryCityInput.addEventListener('change', renderPatientsList);
+        
         saveBtn.addEventListener('click', async () => {
             const date = itineraryDateInput.value;
             const time = itineraryTimeInput.value;
@@ -230,37 +266,8 @@
             const selectedPatientIds = Array.from(patientsListDiv.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
 
             // Validação
-            if (!date || !time || !transportType || !vehicle || !driver || selectedPatientIds.length === 0) {
+            if (!date || !time || !transportType || !itineraryCityInput.value || !vehicle || !driver || selectedPatientIds.length === 0) {
                 errorMessage.textContent = 'Por favor, preencha todos os campos e selecione pelo menos um paciente.';
-                errorMessage.classList.remove('hidden');
-                return;
-            }
-
-            // Validação de Duplicidade
-            const getPeriod = (t) => t < '12:00' ? 'Manhã' : (t < '18:00' ? 'Tarde' : 'Noite');
-            const newPeriod = getPeriod(time);
-            
-            const isVehicleBooked = allItineraries.some(it => 
-                it.date === date && 
-                getPeriod(it.time) === newPeriod && 
-                it.vehicle === vehicle
-            );
-            
-            const isDriverBooked = allItineraries.some(it => 
-                it.date === date && 
-                getPeriod(it.time) === newPeriod && 
-                it.driver === driver &&
-                driver !== "A definir"
-            );
-
-            if (isVehicleBooked) {
-                errorMessage.textContent = `O veículo "${vehicle}" já está agendado para o período da ${newPeriod.toLowerCase()} nesta data.`;
-                errorMessage.classList.remove('hidden');
-                return;
-            }
-
-            if (isDriverBooked) {
-                errorMessage.textContent = `O motorista "${driver}" já está agendado para o período da ${newPeriod.toLowerCase()} nesta data.`;
                 errorMessage.classList.remove('hidden');
                 return;
             }
@@ -269,32 +276,38 @@
 
             try {
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
-                const itinerariesCollection = collection(db, `artifacts/${appId}/public/data/itineraries`);
                 const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
-                
-                const id = Date.now().toString();
-                const selectedPatients = allPendingRequests.filter(p => selectedPatientIds.includes(p.id));
-                const destinations = [...new Set(selectedPatients.map(p => p.city))];
 
-                const newItinerary = {
-                    id: id,
+                const updatedItinerary = {
                     date: date,
                     time: time,
                     transportType: transportType,
                     vehicle: vehicle,
                     driver: driver,
                     patientIds: selectedPatientIds,
-                    destinations: destinations
+                    destinations: [itineraryCityInput.value] // Salva apenas 1 destino
                 };
-
+                
+                const originalPatientIds = initialItineraryData.patientIds;
+                
+                const patientsToUnschedule = originalPatientIds.filter(id => !selectedPatientIds.includes(id));
+                const patientsToSchedule = selectedPatientIds.filter(id => !originalPatientIds.includes(id));
+                
                 const batch = writeBatch(db);
-                batch.set(doc(itinerariesCollection, id), newItinerary);
-                selectedPatientIds.forEach(patientId => {
+
+                batch.update(doc(db, `artifacts/${appId}/public/data/itineraries`, itineraryId), updatedItinerary);
+                
+                patientsToUnschedule.forEach(patientId => {
+                    batch.update(doc(requestsCollection, patientId), { status: "Pendente" });
+                });
+                
+                patientsToSchedule.forEach(patientId => {
                     batch.update(doc(requestsCollection, patientId), { status: "Agendado" });
                 });
+                
                 await batch.commit();
 
-                alert('Roteiro salvo com sucesso!');
+                alert('Roteiro atualizado com sucesso!');
                 window.location.href = 'roteiro.html';
 
             } catch (error) {
@@ -304,9 +317,14 @@
             }
         });
 
-        // --- FIREBASE INITIALIZATION & REALTIME LISTENERS ---
+        // --- FIREBASE INITIALIZATION & DATA LOADING ---
         async function initializeFirebase() {
             try {
+                if (!itineraryId) {
+                    loadingState.innerHTML = '<p class="text-red-500">Erro: ID do roteiro não encontrado.</p>';
+                    return;
+                }
+
                 const firebaseConfig = typeof __firebase_config !== 'undefined' 
                     ? JSON.parse(__firebase_config) 
                     : {
@@ -328,36 +346,41 @@
                 }
 
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
-                const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
                 const itinerariesCollection = collection(db, `artifacts/${appId}/public/data/itineraries`);
+                const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
 
+                const itineraryRef = doc(itinerariesCollection, itineraryId);
+                const docSnap = await getDoc(itineraryRef);
+
+                if (!docSnap.exists()) {
+                    loadingState.innerHTML = '<p class="text-red-500">Roteiro não encontrado.</p>';
+                    return;
+                }
+
+                initialItineraryData = docSnap.data();
+                currentItineraryPatients = allRequests.filter(req => initialItineraryData.patientIds.includes(req.id));
+                
                 onSnapshot(requestsCollection, (snapshot) => {
-                    allPendingRequests = snapshot.docs
-                        .map(doc => ({ id: doc.id, ...doc.data() }))
-                        .filter(req => req.status === 'Pendente');
-                    renderPendingPatients();
+                    allRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    populateForm(initialItineraryData);
                 });
-
-                onSnapshot(itinerariesCollection, (snapshot) => {
-                    allItineraries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                });
-
+                
                 saveBtn.disabled = false;
                 errorMessage.classList.add('hidden');
 
             } catch (error) {
                 console.error("Erro na inicialização ou autenticação do Firebase:", error);
-                errorMessage.textContent = 'Não foi possível conectar à base de dados. Verifique a configuração do Firebase.';
-                errorMessage.classList.remove('hidden');
+                loadingState.innerHTML = '<p class="text-red-500">Ocorreu um erro ao carregar os dados. Verifique a configuração do Firebase.</p>';
                 saveBtn.disabled = true;
                 saveBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
             }
         }
         
+        setupAutocomplete(vehicleInput, vehicleSuggestions, Object.values(VEHICLE_OPTIONS).flat());
         setupAutocomplete(driverInput, driverSuggestions, DRIVERS);
+        setupAutocomplete(itineraryCityInput, document.getElementById('city-suggestions'), CITIES);
         initializeFirebase();
     });
 </script>
 </body>
 </html>
-
