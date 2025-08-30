@@ -23,10 +23,51 @@
                 top: 0;
                 width: 100%;
                 height: 100%;
+                background: white;
             }
             #print-iframe body {
                 visibility: visible !important;
                 background: white;
+                font-family: 'Inter', sans-serif;
+            }
+            #print-iframe .document-container {
+                padding: 2rem;
+                color: #000;
+            }
+            #print-iframe .header h1 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            #print-iframe .details-box {
+                border: 1px solid #000;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+                border-radius: 0.5rem;
+            }
+            #print-iframe .details-box strong {
+                color: #000;
+            }
+            #print-iframe table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+            }
+            #print-iframe th, #print-iframe td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            #print-iframe th {
+                background-color: #f2f2f2;
+            }
+            #print-iframe .section-title {
+                font-size: 1.25rem;
+                font-weight: bold;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 0.5rem;
             }
         }
     </style>
@@ -101,19 +142,19 @@
 </div>
 
 <div id="view-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
-    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" id="view-modal-content">
-        </div>
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" id="view-modal-content">
+        </div>
 </div>
 
 <div id="delete-confirm-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
-    <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
-        <p class="text-gray-600 mb-6">Tem a certeza de que deseja excluir este roteiro? Os pacientes voltarão para a lista de pendentes.</p>
-        <div class="flex justify-center gap-4">
-            <button id="cancel-delete-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300">Cancelar</button>
-            <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Excluir</button>
-        </div>
-    </div>
+    <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
+        <p class="text-gray-600 mb-6">Tem a certeza de que deseja excluir este roteiro? Os pacientes voltarão para a lista de pendentes.</p>
+        <div class="flex justify-center gap-4">
+            <button id="cancel-delete-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300">Cancelar</button>
+            <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Excluir</button>
+        </div>
+    </div>
 </div>
 
 <iframe id="print-iframe" style="display:none;"></iframe>
@@ -127,7 +168,6 @@
     import { getFirestore, collection, onSnapshot, doc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     document.addEventListener('DOMContentLoaded', () => {
-        // --- UI ELEMENTS (RUNS FIRST) ---
         const menuButton = document.getElementById('menu-button'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay');
         const itinerariesListDiv = document.getElementById('itineraries-list');
         const filterDate = document.getElementById('filter-date'), filterVehicle = document.getElementById('filter-vehicle'), filterDestination = document.getElementById('filter-destination'), filterDriver = document.getElementById('filter-driver');
@@ -135,7 +175,6 @@
         const deleteConfirmModal = document.getElementById('delete-confirm-modal'), cancelDeleteBtn = document.getElementById('cancel-delete-btn'), confirmDeleteBtn = document.getElementById('confirm-delete-btn');
         const printIframe = document.getElementById('print-iframe');
 
-        // --- DATA ---
         const CITIES = ["Adamantina - SP", "Alto Garças - MT", "Álvares Machado - SP", "Araçatuba - SP", "Assis - SP", "Avaré - SP", "Barretos - SP", "Bauru - SP", "Botucatu - SP", "Campinas - SP", "Cândido Mota - SP", "Chavantes - SP", "Fernandópolis - SP", "Franca - SP", "Garça - SP", "Herculândia - SP", "Ilha Solteira - SP", "Jales - SP", "Jaú - SP", "Jundiaí - SP", "Londrina - PR", "Marialva - PR", "Marília - SP", "Osvaldo Cruz - SP", "Ourinhos - SP", "Palmital - SP", "Paraguaçu Paulista - SP", "Pardinho - SP", "Penápolis - SP", "Pirapozinho - SP", "Presidente Prudente - SP", "Presidente Venceslau - SP", "Rancharia - SP", "Ribeirão Preto - SP", "Rosana - SP", "Salto - SP", "Santa Cruz do Rio Pardo - SP", "Santos - SP", "São José do Rio Preto - SP", "São Paulo - SP", "Sorocaba - SP", "Tarumã - SP", "Taubaté - SP", "Tupã - SP", "Valinhos - SP"];
         const DRIVERS = ["A definir", "Ademir Pacheco 1", "Ademir Pacheco 2", "Ademir Pacheco 3", "Adilson Adolfo Itelvino 1", "Adilson Adolfo Itelvino 2", "Adilson Adolfo Itelvino 3", "Adriano Aparecido Paschoa 1", "Adriano Aparecido Paschoa 2", "Adriano Aparecido Paschoa 3", "Almir Rogerio da Silva 1", "Almir Rogerio da Silva 2", "Almir Rogerio da Silva 3", "Carlos Antonio Rocha 1", "Carlos Antonio Rocha 2", "Carlos Antonio Rocha 3", "Claudio Rodrigues Santana 1", "Claudio Rodrigues Santana 2", "Claudio Rodrigues Santana 3", "Daniel Ricardo Pontes 1", "Daniel Ricardo Pontes 2", "Daniel Ricardo Pontes 3", "Jefferson Sales Prado 1", "Jefferson Sales Prado 2", "Jefferson Sales Prado 3", "Leandro Muniz Balbino 1", "Leandro Muniz Balbino 2", "Leandro Muniz Balbino 3", "Marcelo Dias Paiao 1", "Marcelo Dias Paiao 2", "Marcelo Dias Paiao 3", "Marcio Antonio dos Reis 1", "Marcio Antonio dos Reis 2", "Marcio Antonio dos Reis 3", "Marcos Aurelio de Oliveira 1", "Marcos Aurelio de Oliveira 2", "Marcos Aurelio de Oliveira 3", "Paulo Cesar Rosa de Barros 1", "Paulo Cesar Rosa de Barros 2", "Paulo Cesar Rosa de Barros 3", "Samara Batista da Silva 1", "Samara Batista da Silva 2", "Samara Batista da Silva 3", "Sebastiao Aparecido Pereira 1", "Sebastiao Aparecido Pereira 2", "Sebastiao Aparecido Pereira 3", "Silvio Andrade Garcia 1", "Silvio Andrade Garcia 2", "Silvio Andrade Garcia 3", "Valmir de Paula Ribeiro 1", "Valmir de Paula Ribeiro 2", "Valmir de Paula Ribeiro 3"];
         const FROTA_VEHICLES = ["Frota 306 - BNZ-3793", "Frota 318 - EGI-6209", "Frota 372 - FRU-2815", "Frota 392 - GCH-7877", "Frota 396 - FTS-1237", "Frota 397 - FOE-7011", "Frota 418 - GBX-4239", "Frota 419 - GDY-7265", "Frota 426 - FXQ-5064", "Frota 428 - GEB-8322", "Frota 429 - GBT-5687", "Frota 435 - ESM-7966", "Frota 439 - ERD-0542", "Frota 448 - FSM-6673", "Frota 454 - FUK-8A34", "Frota 455 - FSA-8F66", "Frota 462 - CNR-6C51", "Frota 463 - EOJ-9C01", "Frota 467 - GBO-8C25", "Frota 470 - EWZ-1C33", "Frota 480 - FUH-5H54", "Frota 481 - FWO-6F86", "Frota 482 - FNT-3C46", "Frota 483 - FYO-1F74", "Frota 494 - FRC-9172", "Frota 495 - FUH-5J32", "Frota 498 - FST-1A72", "Frota 503 - FJF-5A63", "Frota 515 - GDY-4A91", "Frota 516 - FXC-3E81", "Frota 537 - STU-1J61", "Frota 538 - STJ-2G66", "Frota 547 - FQY-0I61", "Frota 548 - SUM-0E46", "Frota 555 - FCQ-2H31", "Frota 556 - EXF-1H41", "Frota 557 - TJM-3B92", "Frota 558 - TLA-0E43", "Frota 569 - TKE-9F75"];
@@ -152,9 +191,11 @@
         let itineraryToDeleteId = null;
         let db;
 
-        // --- UI FUNCTIONS ---
-        const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
-        
+        const toggleMenu = () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        };
+
         flatpickr(filterDate, {
             dateFormat: "Y-m-d",
             altInput: true,
@@ -169,7 +210,11 @@
             input.addEventListener('input', () => {
                 const query = input.value.toLowerCase();
                 suggestionsDiv.innerHTML = '';
-                if (!query) { suggestionsDiv.classList.add('hidden'); renderItineraries(); return; }
+                if (!query) {
+                    suggestionsDiv.classList.add('hidden');
+                    renderItineraries();
+                    return;
+                }
                 const filtered = data.filter(item => item.toLowerCase().includes(query));
                 if (filtered.length > 0) {
                     suggestionsDiv.classList.remove('hidden');
@@ -177,7 +222,11 @@
                         const div = document.createElement('div');
                         div.textContent = item;
                         div.className = 'autocomplete-suggestion';
-                        div.addEventListener('click', () => { input.value = item; suggestionsDiv.classList.add('hidden'); renderItineraries(); });
+                        div.addEventListener('click', () => {
+                            input.value = item;
+                            suggestionsDiv.classList.add('hidden');
+                            renderItineraries();
+                        });
                         suggestionsDiv.appendChild(div);
                     });
                 } else {
@@ -185,7 +234,11 @@
                 }
                 renderItineraries();
             });
-            document.addEventListener('click', (e) => { if (e.target !== input) suggestionsDiv.classList.add('hidden'); });
+            document.addEventListener('click', (e) => {
+                if (e.target !== input) {
+                    suggestionsDiv.classList.add('hidden');
+                }
+            });
         }
         
         function renderItineraries() {
@@ -215,6 +268,7 @@
                 card.innerHTML = `
                     <div class="flex-1 mb-4 md:mb-0">
                         <p class="text-xl font-bold text-blue-600">${formattedDate} - ${itinerary.time}</p>
+                        <p class="text-gray-700"><strong>Tipo de Transporte:</strong> ${itinerary.transportType}</p>
                         <p class="text-gray-700"><strong>Motorista:</strong> ${itinerary.driver}</p>
                         <p class="text-gray-700"><strong>Veículo:</strong> ${itinerary.vehicle}</p>
                         <p class="text-gray-600"><strong>Destinos:</strong> ${itinerary.destinations.join(', ')}</p>
@@ -230,8 +284,14 @@
             });
         }
         
-        function openModal(modal) { modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10); }
-        function closeModal(modal) { modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 250); }
+        function openModal(modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+        function closeModal(modal) {
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 250);
+        }
 
         async function showViewModal(itineraryId) {
             const itinerary = allItineraries.find(i => i.id === itineraryId);
@@ -252,6 +312,7 @@
                     <div class="space-y-4">
                         <p><strong>Motorista:</strong> ${itinerary.driver}</p>
                         <p><strong>Veículo:</strong> ${itinerary.vehicle}</p>
+                        <p><strong>Tipo de Transporte:</strong> ${itinerary.transportType}</p>
                         <div>
                             <h4 class="font-semibold text-lg mb-2">Pacientes (${patients.length})</h4>
                             <ul class="list-disc list-inside space-y-2 max-h-60 overflow-y-auto pr-2">
@@ -274,30 +335,54 @@
             const patientsInItinerary = allRequests.filter(req => itinerary.patientIds.includes(req.id));
             const formattedDate = new Date(itinerary.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
-            let printHTML = `
-                <div style="font-family: 'Inter', sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-                    <h1 style="font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 1rem;">Roteiro de Viagem</h1>
-                    <div style="border: 2px solid #3b82f6; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem;">
-                        <p style="font-size: 1.125rem; font-weight: bold; color: #3b82f6;">Data e Hora: ${formattedDate} - ${itinerary.time}</p>
-                        <p style="margin-top: 0.5rem;"><strong>Motorista:</strong> ${itinerary.driver}</p>
+            let patientRows = patientsInItinerary.map(p => `
+                <tr>
+                    <td class="p-2 border border-gray-400 text-sm">${p.patientName}</td>
+                    <td class="p-2 border border-gray-400 text-sm">${p.appointmentTime}</td>
+                    <td class="p-2 border border-gray-400 text-sm">${p.city} (${p.location})</td>
+                    <td class="p-2 border border-gray-400 text-sm">${p.boardingLocation}</td>
+                    <td class="p-2 border border-gray-400 text-sm">${p.companions.length > 0 ? p.companions.join(', ') : 'Nenhum'}</td>
+                    <td class="p-2 border border-gray-400 text-sm">${p.observations || 'Nenhuma'}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="document-container">
+                    <header class="header text-center mb-6">
+                        <h1 class="text-xl font-bold">Roteiro de Viagem</h1>
+                        <p class="text-sm">TFD Paraguaçu</p>
+                    </header>
+                    
+                    <div class="details-box mb-6 border border-gray-400 p-4 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                             <p class="text-lg font-bold text-blue-600">Data da Viagem: <span class="font-normal text-black">${formattedDate}</span></p>
+                             <p class="text-lg font-bold text-blue-600">Hora de Saída: <span class="font-normal text-black">${itinerary.time}</span></p>
+                        </div>
+                        <p><strong>Tipo de Transporte:</strong> ${itinerary.transportType}</p>
                         <p><strong>Veículo:</strong> ${itinerary.vehicle}</p>
+                        <p><strong>Motorista:</strong> ${itinerary.driver}</p>
                     </div>
-                    <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;">Pacientes e Detalhes</h2>
-                    <div style="border-top: 1px solid #ccc;">
-                        ${patientsInItinerary.map(p => `
-                            <div style="padding: 1rem 0; border-bottom: 1px dashed #ddd;">
-                                <p style="font-weight: bold;">Paciente: ${p.patientName}</p>
-                                <p style="margin-top: 0.25rem;"><strong>Cidade de Destino:</strong> ${p.city} (${p.location})</p>
-                                <p><strong>Local de Embarque:</strong> ${p.boardingLocation}</p>
-                                <p><strong>Hora da Consulta:</strong> ${p.appointmentTime}</p>
-                                <p><strong>Acompanhantes:</strong> ${p.companions.length > 0 ? p.companions.join(', ') : 'Nenhum'}</p>
-                                <p style="margin-top: 0.5rem;"><strong>Observações:</strong> ${p.observations || 'Nenhuma'}</p>
-                            </div>
-                        `).join('')}
+
+                    <h2 class="section-title text-lg font-semibold mb-4">Lista de Pacientes</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="p-2 border border-gray-400">Paciente</th>
+                                    <th class="p-2 border border-gray-400">Hora da Consulta</th>
+                                    <th class="p-2 border border-gray-400">Destino</th>
+                                    <th class="p-2 border border-gray-400">Local de Embarque</th>
+                                    <th class="p-2 border border-gray-400">Acompanhantes</th>
+                                    <th class="p-2 border border-gray-400">Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${patientRows}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             `;
-            return printHTML;
         }
 
         async function showPrintView(itineraryId) {
@@ -317,8 +402,65 @@
                     <title>Roteiro de Viagem</title>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
                     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <script src="https://cdn.tailwindcss.com"></script>
                     <style>
                         body { font-family: 'Inter', sans-serif; }
+                        @media print {
+                            body { visibility: hidden !important; }
+                            #print-iframe {
+                                visibility: visible !important;
+                                position: absolute;
+                                left: 0;
+                                top: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: white;
+                            }
+                            #print-iframe body {
+                                visibility: visible !important;
+                                background: white;
+                                font-family: 'Inter', sans-serif;
+                            }
+                            #print-iframe .document-container {
+                                padding: 2rem;
+                                color: #000;
+                            }
+                            #print-iframe .header h1 {
+                                font-size: 1.5rem;
+                                font-weight: bold;
+                                text-align: center;
+                                margin-bottom: 1rem;
+                            }
+                            #print-iframe .details-box {
+                                border: 1px solid #000;
+                                padding: 1rem;
+                                margin-bottom: 1.5rem;
+                                border-radius: 0.5rem;
+                            }
+                            #print-iframe .details-box strong {
+                                color: #000;
+                            }
+                            #print-iframe table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 1rem;
+                            }
+                            #print-iframe th, #print-iframe td {
+                                border: 1px solid #ddd;
+                                padding: 8px;
+                                text-align: left;
+                            }
+                            #print-iframe th {
+                                background-color: #f2f2f2;
+                            }
+                            #print-iframe .section-title {
+                                font-size: 1.25rem;
+                                font-weight: bold;
+                                margin-bottom: 1rem;
+                                border-bottom: 1px solid #ccc;
+                                padding-bottom: 0.5rem;
+                            }
+                        }
                     </style>
                 </head>
                 <body>
@@ -352,11 +494,10 @@
             }
         }
         
-        // --- EVENT LISTENERS ---
         if(menuButton) menuButton.addEventListener('click', toggleMenu);
         if(overlay) overlay.addEventListener('click', toggleMenu);
         
-        [filterVehicle, filterDestination, filterDriver].forEach(el => {
+        [filterDate, filterVehicle, filterDestination, filterDriver].forEach(el => {
             el.addEventListener('input', renderItineraries);
         });
         
@@ -379,7 +520,6 @@
         cancelDeleteBtn.addEventListener('click', () => { closeModal(deleteConfirmModal); itineraryToDeleteId = null; });
         confirmDeleteBtn.addEventListener('click', deleteItinerary);
 
-        // --- FIREBASE INITIALIZATION & REALTIME LISTENERS ---
         async function initializeFirebase() {
             try {
                 window.appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
