@@ -6,30 +6,40 @@
     <title>Criar Novo Roteiro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        .autocomplete-suggestions { border: 1px solid #ddd; max-height: 150px; overflow-y: auto; position: absolute; width: 100%; z-index: 10; background-color: white; border-radius: 0 0 0.5rem 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .autocomplete-suggestion { padding: 10px; cursor: pointer; }
+        .autocomplete-suggestion:hover { background-color: #f0f0f0; }
+    </style>
 </head>
 <body class="bg-gray-100">
 <div class="flex h-screen bg-gray-200 font-sans">
     <!-- Sidebar -->
     <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20">
-        <div class="flex items-center border-b pb-4">
-             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-            <h1 class="text-xl font-bold text-gray-800 ml-3">Sistema de Viagem</h1>
+       <div class="flex items-center border-b pb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h1 class="text-xl font-bold text-gray-800 ml-3">TFD Paraguaçu</h1>
         </div>
         <nav class="mt-6">
-            <a href="cadastro_viagem.html" class="flex items-center py-2 px-4 text-gray-600 rounded-lg hover:bg-gray-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+             <a href="index.html" class="flex items-center py-2 px-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="mx-3">Início</span>
+            </a>
+            <a href="cadastro_viagem.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 <span class="mx-3">Cadastro de Viagem</span>
             </a>
             <a href="roteiro.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
                 <span class="mx-3">Roteiro de Viagens</span>
             </a>
             <a href="solicitacoes_pendentes.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 <span class="mx-3">Solicitações Pendentes</span>
             </a>
-        </nav>
+       </nav>
     </div>
     <!-- Content -->
     <div class="flex-1 flex flex-col">
@@ -40,32 +50,46 @@
             </button>
         </header>
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
-            <div class="w-full bg-white p-6 rounded-2xl shadow-lg mx-auto">
-                <!-- Seletor de Data -->
+            <div class="w-full bg-white p-6 rounded-2xl shadow-lg mx-auto max-w-4xl">
+                <!-- Passo 1: Data e Tipo -->
                 <div class="mb-6">
-                    <label for="itinerary-date" class="block text-lg font-semibold text-gray-700 mb-2">1. Selecione a Data da Viagem</label>
-                    <input type="date" id="itinerary-date" class="w-full md:w-1/3 p-2 border rounded-lg">
+                    <h2 class="block text-lg font-semibold text-gray-700 mb-2">1. Selecione a Data e o Tipo de Transporte</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="itinerary-date" class="w-full p-2 border rounded-lg" placeholder="Escolha uma data">
+                        <select id="roteiro-transport-type" class="w-full p-2 border rounded-lg bg-white">
+                            <option value="" disabled selected>Selecione o tipo</option>
+                            <option value="Ambulância">Ambulância</option>
+                            <option value="Coletivo">Coletivo</option>
+                            <option value="Exclusivo">Exclusivo</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <!-- Lista de Pacientes Pendentes -->
+                <!-- Passo 2: Pacientes -->
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-700 mb-2">2. Selecione os Pacientes para este Roteiro</h2>
                     <div id="pending-patients-list" class="max-h-96 overflow-y-auto border rounded-lg p-4 bg-gray-50">
-                       <p class="text-gray-500">Selecione uma data para ver os pacientes com viagens pendentes.</p>
+                       <p class="text-gray-500">Selecione uma data e um tipo de transporte para ver os pacientes.</p>
                     </div>
                 </div>
 
-                <!-- Detalhes do Roteiro -->
+                <!-- Passo 3: Detalhes do Roteiro -->
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-700 mb-2">3. Preencha os Detalhes do Roteiro</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="vehicle" class="block text-sm font-medium text-gray-600 mb-1">Veículo</label>
-                            <input type="text" id="vehicle" placeholder="Ex: Ambulância ABC-1234" class="w-full p-2 border rounded-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                         <div>
+                            <label for="itinerary-time" class="block text-sm font-medium text-gray-600 mb-1">Hora da Viagem</label>
+                            <input type="text" id="itinerary-time" placeholder="HH:MM" class="w-full p-2 border rounded-lg">
                         </div>
-                        <div>
+                        <div class="relative">
+                            <label for="vehicle" class="block text-sm font-medium text-gray-600 mb-1">Veículo</label>
+                            <input type="text" id="vehicle" placeholder="Selecione o tipo de transporte" class="w-full p-2 border rounded-lg bg-gray-200" autocomplete="off" disabled>
+                             <div id="vehicle-suggestions" class="autocomplete-suggestions hidden"></div>
+                        </div>
+                        <div class="relative">
                             <label for="driver" class="block text-sm font-medium text-gray-600 mb-1">Motorista</label>
-                            <input type="text" id="driver" placeholder="Nome do motorista" class="w-full p-2 border rounded-lg">
+                            <input type="text" id="driver" placeholder="Nome do motorista" class="w-full p-2 border rounded-lg" autocomplete="off">
+                            <div id="driver-suggestions" class="autocomplete-suggestions hidden"></div>
                         </div>
                     </div>
                 </div>
@@ -80,101 +104,227 @@
     </div>
     <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden"></div>
 </div>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, onSnapshot, doc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // --- FIREBASE CONFIG ---
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+        ? JSON.parse(__firebase_config) 
+        : {
+            apiKey: "AIzaSyAWWhu2U6ZJ9AQYZ_Awa2CnciewwY2x71E",
+            authDomain: "tfd-transporte.firebaseapp.com",
+            projectId: "tfd-transporte",
+            storageBucket: "tfd-transporte.appspot.com",
+            messagingSenderId: "747365724187",
+            appId: "1:747365724187:web:4056286c794834f69f48be"
+          };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    try {
+        if (typeof __firebase_config !== 'undefined' && typeof __initial_auth_token !== 'undefined') {
+            await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+            await signInAnonymously(auth);
+        }
+    } catch (error) {
+        console.error("Erro na autenticação do Firebase:", error);
+    }
+
+    const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
+    const itinerariesCollection = collection(db, `artifacts/${appId}/public/data/itineraries`);
+    // --- END FIREBASE CONFIG ---
+
     document.addEventListener('DOMContentLoaded', () => {
-        // Lógica do Menu
-        const menuButton = document.getElementById('menu-button');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        if (menuButton) menuButton.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        });
-        if (overlay) overlay.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        });
+        // --- DATA ---
+        let pendingRequests = [];
+        let allItineraries = [];
+        const DRIVERS = ["A definir", "Ademir Pacheco 1", "Ademir Pacheco 2", "Ademir Pacheco 3", "Adilson Adolfo Itelvino 1", "Adilson Adolfo Itelvino 2", "Adilson Adolfo Itelvino 3", "Adriano Aparecido Paschoa 1", "Adriano Aparecido Paschoa 2", "Adriano Aparecido Paschoa 3", "Almir Rogerio da Silva 1", "Almir Rogerio da Silva 2", "Almir Rogerio da Silva 3", "Carlos Antonio Rocha 1", "Carlos Antonio Rocha 2", "Carlos Antonio Rocha 3", "Claudio Rodrigues Santana 1", "Claudio Rodrigues Santana 2", "Claudio Rodrigues Santana 3", "Daniel Ricardo Pontes 1", "Daniel Ricardo Pontes 2", "Daniel Ricardo Pontes 3", "Jefferson Sales Prado 1", "Jefferson Sales Prado 2", "Jefferson Sales Prado 3", "Leandro Muniz Balbino 1", "Leandro Muniz Balbino 2", "Leandro Muniz Balbino 3", "Marcelo Dias Paiao 1", "Marcelo Dias Paiao 2", "Marcelo Dias Paiao 3", "Marcio Antonio dos Reis 1", "Marcio Antonio dos Reis 2", "Marcio Antonio dos Reis 3", "Marcos Aurelio de Oliveira 1", "Marcos Aurelio de Oliveira 2", "Marcos Aurelio de Oliveira 3", "Paulo Cesar Rosa de Barros 1", "Paulo Cesar Rosa de Barros 2", "Paulo Cesar Rosa de Barros 3", "Samara Batista da Silva 1", "Samara Batista da Silva 2", "Samara Batista da Silva 3", "Sebastiao Aparecido Pereira 1", "Sebastiao Aparecido Pereira 2", "Sebastiao Aparecido Pereira 3", "Silvio Andrade Garcia 1", "Silvio Andrade Garcia 2", "Silvio Andrade Garcia 3", "Valmir de Paula Ribeiro 1", "Valmir de Paula Ribeiro 2", "Valmir de Paula Ribeiro 3"];
+        const FROTA_VEHICLES = ["Frota 306 - BNZ-3793", "Frota 318 - EGI-6209", "Frota 372 - FRU-2815", "Frota 392 - GCH-7877", "Frota 396 - FTS-1237", "Frota 397 - FOE-7011", "Frota 418 - GBX-4239", "Frota 419 - GDY-7265", "Frota 426 - FXQ-5064", "Frota 428 - GEB-8322", "Frota 429 - GBT-5687", "Frota 435 - ESM-7966", "Frota 439 - ERD-0542", "Frota 448 - FSM-6673", "Frota 454 - FUK-8A34", "Frota 455 - FSA-8F66", "Frota 462 - CNR-6C51", "Frota 463 - EOJ-9C01", "Frota 467 - GBO-8C25", "Frota 470 - EWZ-1C33", "Frota 480 - FUH-5H54", "Frota 481 - FWO-6F86", "Frota 482 - FNT-3C46", "Frota 483 - FYO-1F74", "Frota 494 - FRC-9172", "Frota 495 - FUH-5J32", "Frota 498 - FST-1A72", "Frota 503 - FJF-5A63", "Frota 515 - GDY-4A91", "Frota 516 - FXC-3E81", "Frota 537 - STU-1J61", "Frota 538 - STJ-2G66", "Frota 547 - FQY-0I61", "Frota 548 - SUM-0E46", "Frota 555 - FCQ-2H31", "Frota 556 - EXF-1H41", "Frota 557 - TJM-3B92", "Frota 558 - TLA-0E43", "Frota 569 - TKE-9F75"];
+        const AMBULANCIA_VEHICLES = Array.from({ length: 5 }, (_, i) => `A definir - Ambulância ${i + 1}`);
+        const EXCLUSIVO_VEHICLES = Array.from({ length: 10 }, (_, i) => `A definir - Exclusivo ${i + 1}`);
+        const COLETIVO_DEFINIR = Array.from({ length: 25 }, (_, i) => `A definir - Coletivo ${i + 1}`);
+        const HEMODIALISE_DEFINIR = Array.from({ length: 3 }, (_, i) => `A definir - Hemodiálise ${i + 1}`);
+        const COLETIVO_VEHICLES = [...COLETIVO_DEFINIR, ...HEMODIALISE_DEFINIR, ...FROTA_VEHICLES];
+        let currentVehicleList = [];
 
-        const itineraryDate = document.getElementById('itinerary-date');
-        const patientsList = document.getElementById('pending-patients-list');
-        const saveButton = document.getElementById('save-itinerary-btn');
-        const vehicleInput = document.getElementById('vehicle');
-        const driverInput = document.getElementById('driver');
+        // --- UI ELEMENTS ---
+        const menuButton = document.getElementById('menu-button'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay');
+        const dateInput = document.getElementById('itinerary-date'), timeInput = document.getElementById('itinerary-time');
+        const transportTypeSelect = document.getElementById('roteiro-transport-type');
+        const patientsListDiv = document.getElementById('pending-patients-list');
+        const vehicleInput = document.getElementById('vehicle'), driverInput = document.getElementById('driver');
+        const saveBtn = document.getElementById('save-itinerary-btn');
+        
+        const datePicker = flatpickr(dateInput, { locale: "pt", altInput: true, altFormat: "d \\de F \\de Y", dateFormat: "Y-m-d" });
+        flatpickr(timeInput, { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true });
+        
+        // --- FUNCTIONS ---
+        const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
 
-        const REQUESTS_KEY = 'travelRequests';
-        const ITINERARIES_KEY = 'travelItineraries';
+        function updateAvailableVehicles() {
+            const transportType = transportTypeSelect.value;
+            vehicleInput.value = '';
+            vehicleInput.disabled = false;
+            vehicleInput.classList.remove('bg-gray-200');
+            vehicleInput.placeholder = 'Digite para procurar o veículo...';
 
-        itineraryDate.addEventListener('change', () => {
-            const selectedDate = itineraryDate.value;
-            if (!selectedDate) {
-                patientsList.innerHTML = '<p class="text-gray-500">Selecione uma data para ver os pacientes com viagens pendentes.</p>';
+            if (transportType === 'Ambulância') {
+                currentVehicleList = AMBULANCIA_VEHICLES;
+            } else if (transportType === 'Coletivo') {
+                currentVehicleList = COLETIVO_VEHICLES;
+            } else if (transportType === 'Exclusivo') {
+                currentVehicleList = EXCLUSIVO_VEHICLES;
+            } else {
+                currentVehicleList = [];
+                vehicleInput.disabled = true;
+                vehicleInput.classList.add('bg-gray-200');
+                vehicleInput.placeholder = 'Selecione o tipo de transporte';
+            }
+            setupAutocomplete(vehicleInput, document.getElementById('vehicle-suggestions'), currentVehicleList);
+        }
+
+        function setupAutocomplete(input, suggestionsDiv, data) {
+            input.addEventListener('input', () => {
+                const query = input.value.toLowerCase();
+                suggestionsDiv.innerHTML = '';
+                if (!query) { suggestionsDiv.classList.add('hidden'); return; }
+                const filtered = data.filter(item => item.toLowerCase().includes(query));
+                if (filtered.length > 0) {
+                    suggestionsDiv.classList.remove('hidden');
+                    filtered.forEach(item => {
+                        const div = document.createElement('div');
+                        div.textContent = item;
+                        div.className = 'autocomplete-suggestion';
+                        div.addEventListener('click', () => { input.value = item; suggestionsDiv.classList.add('hidden'); });
+                        suggestionsDiv.appendChild(div);
+                    });
+                } else { suggestionsDiv.classList.add('hidden'); }
+            });
+            document.addEventListener('click', (e) => { if (e.target !== input) suggestionsDiv.classList.add('hidden'); });
+        }
+
+        function renderPendingPatients() {
+            const selectedDateObj = datePicker.selectedDates[0];
+            const transportType = transportTypeSelect.value;
+            const selectedDate = selectedDateObj ? flatpickr.formatDate(selectedDateObj, "Y-m-d") : null;
+
+            if (!selectedDate || !transportType) {
+                patientsListDiv.innerHTML = '<p class="text-gray-500">Selecione uma data e um tipo de transporte para ver os pacientes.</p>';
                 return;
             }
-            
-            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
-            const pendingRequests = allRequests.filter(req => req.status === 'Pendente' && req.travelDate === selectedDate);
 
-            patientsList.innerHTML = '';
-            if (pendingRequests.length === 0) {
-                patientsList.innerHTML = '<p class="text-gray-500">Nenhuma solicitação pendente para esta data.</p>';
+            const patientsForFilter = pendingRequests.filter(req => req.travelDate === selectedDate && req.transportType === transportType);
+            patientsListDiv.innerHTML = '';
+
+            if (patientsForFilter.length === 0) {
+                patientsListDiv.innerHTML = `<p class="text-gray-500">Nenhum paciente pendente para ${transportType} em ${flatpickr.formatDate(selectedDateObj, "d/m/Y")}.</p>`;
                 return;
             }
-
-            pendingRequests.forEach(req => {
+            patientsForFilter.forEach(req => {
                 const patientDiv = document.createElement('div');
-                patientDiv.className = 'flex items-center justify-between p-3 bg-white rounded-lg border mb-2';
+                patientDiv.className = 'flex items-center justify-between p-2 border-b';
                 patientDiv.innerHTML = `
-                    <div class="flex items-center">
-                        <input type="checkbox" id="patient-${req.id}" value="${req.id}" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-4">
-                        <label for="patient-${req.id}" class="flex-grow">
-                            <span class="font-bold text-gray-800">${req.patientName}</span>
-                            <p class="text-sm text-gray-500">${req.city} - ${req.location} (${req.appointmentTime})</p>
-                        </label>
+                    <div>
+                        <span class="font-semibold">${req.patientName}</span>
+                        <span class="text-sm text-gray-500 ml-2">${req.appointmentTime} - ${req.city}</span>
                     </div>
-                    <span class="text-sm font-medium text-white ${req.transportType === 'Ambulância' ? 'bg-red-500' : (req.transportType === 'Exclusivo' ? 'bg-yellow-500' : 'bg-blue-500')} px-2 py-1 rounded-full">${req.transportType}</span>
+                    <input type="checkbox" data-id="${req.id}" class="patient-checkbox h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                 `;
-                patientsList.appendChild(patientDiv);
+                patientsListDiv.appendChild(patientDiv);
             });
-        });
+        }
 
-        saveButton.addEventListener('click', () => {
-            const selectedPatientIds = Array.from(patientsList.querySelectorAll('input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
-            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
-            
-            if (selectedPatientIds.length === 0) {
-                alert('Selecione ao menos um paciente para o roteiro.');
+        async function saveItinerary() {
+            const selectedDate = dateInput.value;
+            const selectedTime = timeInput.value;
+            const vehicle = vehicleInput.value.trim();
+            const driver = driverInput.value.trim();
+            const selectedPatientIds = Array.from(document.querySelectorAll('.patient-checkbox:checked')).map(cb => cb.dataset.id);
+
+            if (!selectedDate || !transportTypeSelect.value || !selectedTime || !vehicle || !driver || selectedPatientIds.length === 0) {
+                alert('Por favor, preencha todos os campos e selecione pelo menos um paciente.');
                 return;
             }
-            if (!vehicleInput.value.trim() || !driverInput.value.trim()) {
-                alert('Preencha os campos de Veículo e Motorista.');
+            
+            const getPeriod = (time) => {
+                const hour = parseInt(time.split(':')[0], 10);
+                if (hour < 12) return 'Manhã';
+                if (hour < 18) return 'Tarde';
+                return 'Noite';
+            };
+            const period = getPeriod(selectedTime);
+            
+            const isDuplicate = allItineraries.some(it => 
+                it.date === selectedDate &&
+                it.period === period &&
+                ((it.driver === driver && driver !== "A definir") || (it.vehicle === vehicle))
+            );
+
+            if (isDuplicate) {
+                alert('Conflito de agendamento: Motorista ou veículo já alocado para este período na data selecionada.');
                 return;
             }
 
-            const patientsForItinerary = allRequests.filter(req => selectedPatientIds.includes(req.id));
-            
-            // Atualiza status dos selecionados para 'Agendado'
-            allRequests.forEach(req => {
-                if (selectedPatientIds.includes(req.id)) {
-                    req.status = 'Agendado';
-                }
-            });
-            localStorage.setItem(REQUESTS_KEY, JSON.stringify(allRequests));
+            const id = Date.now().toString();
+            const selectedPatients = pendingRequests.filter(p => selectedPatientIds.includes(p.id));
+            const destinations = [...new Set(selectedPatients.map(p => p.city))];
 
-            // Cria o novo roteiro
             const newItinerary = {
-                id: Date.now(),
-                date: itineraryDate.value,
-                vehicle: vehicleInput.value.trim(),
-                driver: driverInput.value.trim(),
-                patients: patientsForItinerary
+                id,
+                date: selectedDate,
+                time: selectedTime,
+                period,
+                vehicle,
+                driver,
+                patientIds: selectedPatientIds,
+                destinations,
+                transportType: transportTypeSelect.value
             };
             
-            const allItineraries = JSON.parse(localStorage.getItem(ITINERARIES_KEY)) || [];
-            allItineraries.push(newItinerary);
-            localStorage.setItem(ITINERARIES_KEY, JSON.stringify(allItineraries));
-            
-            alert('Roteiro salvo com sucesso!');
-            window.location.href = 'roteiro.html';
+            try {
+                const batch = writeBatch(db);
+                batch.set(doc(itinerariesCollection, id), newItinerary);
+                selectedPatientIds.forEach(patientId => {
+                    batch.update(doc(requestsCollection, patientId), { status: "Agendado" });
+                });
+                await batch.commit();
+                alert('Roteiro salvo com sucesso!');
+                window.location.href = 'roteiro.html';
+            } catch (error) {
+                console.error("Erro ao salvar roteiro:", error);
+                alert('Ocorreu um erro ao salvar o roteiro.');
+            }
+        }
+
+        // --- EVENT LISTENERS & INITIALIZATION ---
+        if(menuButton) menuButton.addEventListener('click', toggleMenu);
+        if(overlay) overlay.addEventListener('click', toggleMenu);
+        saveBtn.addEventListener('click', saveItinerary);
+        
+        datePicker.config.onChange.push(() => renderPendingPatients());
+        transportTypeSelect.addEventListener('change', () => {
+            updateAvailableVehicles();
+            renderPendingPatients();
+        });
+        
+        setupAutocomplete(driverInput, document.getElementById('driver-suggestions'), DRIVERS);
+        updateAvailableVehicles();
+
+        onSnapshot(query(requestsCollection, where("status", "==", "Pendente")), (snapshot) => {
+            pendingRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderPendingPatients();
+        });
+        
+        onSnapshot(itinerariesCollection, (snapshot) => {
+            allItineraries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         });
     });
 </script>
