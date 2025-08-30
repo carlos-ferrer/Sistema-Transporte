@@ -40,6 +40,10 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 <span class="mx-3">Solicitações Pendentes</span>
             </a>
+            <a href="relatorios.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="mx-3">Relatórios</span>
+            </a>
         </nav>
     </div>
 
@@ -65,11 +69,11 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="travel-date" class="block text-sm font-medium text-gray-600 mb-1">Data da Viagem <span class="text-red-500">*</span></label>
-                                <input type="text" id="travel-date" placeholder="Selecione a data" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                                <input type="text" id="travel-date" placeholder="Selecione a data" required class="w-full p-3 bg-white border border-gray-300 rounded-lg">
                             </div>
                             <div>
                                 <label for="appointment-time" class="block text-sm font-medium text-gray-600 mb-1">Hora da Consulta <span class="text-red-500">*</span></label>
-                                <input type="text" id="appointment-time" placeholder="Selecione a hora" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                                <input type="text" id="appointment-time" placeholder="Selecione a hora" required class="w-full p-3 bg-white border border-gray-300 rounded-lg">
                             </div>
                         </div>
                     </div>
@@ -97,8 +101,8 @@
                                 <select id="transport-type" name="transport-type" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
                                     <option value="" disabled selected>Selecione uma opção</option>
                                     <option value="Ambulância">Ambulância</option>
-                                    <option value="Coletivo">Coletivo</option>
                                     <option value="Exclusivo">Exclusivo</option>
+                                    <option value="Coletivo">Coletivo</option>
                                 </select>
                             </div>
                             <div class="md:col-span-2">
@@ -120,9 +124,10 @@
                         <textarea id="observations" name="observations" rows="4" placeholder="Adicione aqui informações não obrigatórias..." class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg"></textarea>
                     </div>
                     <div class="pt-6 border-t">
-                        <button type="submit" class="w-full bg-blue-600 text-white font-bold text-lg py-3 px-6 rounded-lg hover:bg-blue-700">
+                        <button type="submit" id="submit-btn" class="w-full bg-blue-600 text-white font-bold text-lg py-3 px-6 rounded-lg hover:bg-blue-700">
                             Salvar Solicitação
                         </button>
+                        <p id="error-message" class="text-red-500 text-center mt-2 hidden"></p>
                     </div>
                 </form>
             </div>
@@ -131,6 +136,7 @@
     <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden"></div>
 </div>
 
+<!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
 
@@ -141,59 +147,114 @@
     import { getFirestore, collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     document.addEventListener('DOMContentLoaded', () => {
-        // --- UI ELEMENTS & INITIALIZATION (RUNS FIRST) ---
+        // --- UI ELEMENTS (RUNS FIRST) ---
         const menuButton = document.getElementById('menu-button'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay');
-        const travelForm = document.getElementById('travelForm');
-        const cityInput = document.getElementById('city'), citySuggestionsContainer = document.getElementById('city-suggestions');
+        const travelForm = document.getElementById('travelForm'), submitBtn = document.getElementById('submit-btn'), errorMessage = document.getElementById('error-message');
         const addCompanionBtn = document.getElementById('add-companion-btn'), companionsContainer = document.getElementById('companions-container');
-        
-        const datePicker = flatpickr("#travel-date", { locale: "pt", altInput: true, altFormat: "d \\de F \\de Y", dateFormat: "Y-m-d" });
-        const timePicker = flatpickr("#appointment-time", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true });
+        const cityInput = document.getElementById('city'), citySuggestions = document.getElementById('city-suggestions');
         
         const CITIES = ["Adamantina - SP", "Alto Garças - MT", "Álvares Machado - SP", "Araçatuba - SP", "Assis - SP", "Avaré - SP", "Barretos - SP", "Bauru - SP", "Botucatu - SP", "Campinas - SP", "Cândido Mota - SP", "Chavantes - SP", "Fernandópolis - SP", "Franca - SP", "Garça - SP", "Herculândia - SP", "Ilha Solteira - SP", "Jales - SP", "Jaú - SP", "Jundiaí - SP", "Londrina - PR", "Marialva - PR", "Marília - SP", "Osvaldo Cruz - SP", "Ourinhos - SP", "Palmital - SP", "Paraguaçu Paulista - SP", "Pardinho - SP", "Penápolis - SP", "Pirapozinho - SP", "Presidente Prudente - SP", "Presidente Venceslau - SP", "Rancharia - SP", "Ribeirão Preto - SP", "Rosana - SP", "Salto - SP", "Santa Cruz do Rio Pardo - SP", "Santos - SP", "São José do Rio Preto - SP", "São Paulo - SP", "Sorocaba - SP", "Tarumã - SP", "Taubaté - SP", "Tupã - SP", "Valinhos - SP"];
+        let db; // Será definido após a ligação ao Firebase
 
-        // Setup all UI event listeners
-        if(menuButton) menuButton.addEventListener('click', () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); });
-        if(overlay) overlay.addEventListener('click', () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); });
+        // --- UI FUNCTIONS ---
+        const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
 
-        cityInput.addEventListener('input', () => {
-            const query = cityInput.value.toLowerCase();
-            citySuggestionsContainer.innerHTML = '';
-            if (!query) { citySuggestionsContainer.classList.add('hidden'); return; }
-            const filteredCities = CITIES.filter(c => c.toLowerCase().includes(query));
-            if (filteredCities.length > 0) {
-                citySuggestionsContainer.classList.remove('hidden');
-                filteredCities.forEach(city => {
-                    const suggestionDiv = document.createElement('div');
-                    suggestionDiv.textContent = city;
-                    suggestionDiv.className = 'autocomplete-suggestion';
-                    suggestionDiv.addEventListener('click', () => { cityInput.value = city; citySuggestionsContainer.classList.add('hidden'); });
-                    citySuggestionsContainer.appendChild(suggestionDiv);
-                });
-            } else { citySuggestionsContainer.classList.add('hidden'); }
+        flatpickr("#travel-date", {
+            dateFormat: "Y-m-d", altInput: true, altFormat: "d de F de Y", locale: "pt",
         });
-        document.addEventListener('click', (e) => { if (e.target !== cityInput) citySuggestionsContainer.classList.add('hidden'); });
+        flatpickr("#appointment-time", {
+            enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, locale: "pt",
+        });
 
-        addCompanionBtn.addEventListener('click', () => {
-            const companionCount = companionsContainer.children.length;
-            const newCompanionDiv = document.createElement('div');
-            newCompanionDiv.className = 'flex items-center gap-2';
-            newCompanionDiv.innerHTML = `
-                <input type="text" name="companion-${companionCount}" placeholder="Nome do acompanhante ${companionCount + 1}" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
-                <button type="button" class="remove-companion-btn text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" /></svg>
+        function addCompanionField() {
+            const companionId = `companion-${Date.now()}`;
+            const newField = document.createElement('div');
+            newField.className = 'flex items-center gap-2';
+            newField.innerHTML = `
+                <input type="text" id="${companionId}" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg" placeholder="Nome do acompanhante">
+                <button type="button" class="remove-companion-btn text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
                 </button>
             `;
-            companionsContainer.appendChild(newCompanionDiv);
+            companionsContainer.appendChild(newField);
+        }
+
+        function setupAutocomplete() {
+            cityInput.addEventListener('input', () => {
+                const query = cityInput.value.toLowerCase();
+                citySuggestions.innerHTML = '';
+                if (!query) { citySuggestions.classList.add('hidden'); return; }
+                const filtered = CITIES.filter(city => city.toLowerCase().includes(query));
+                if (filtered.length > 0) {
+                    citySuggestions.classList.remove('hidden');
+                    filtered.forEach(city => {
+                        const div = document.createElement('div');
+                        div.textContent = city;
+                        div.className = 'autocomplete-suggestion';
+                        div.addEventListener('click', () => { cityInput.value = city; citySuggestions.classList.add('hidden'); });
+                        citySuggestions.appendChild(div);
+                    });
+                } else {
+                    citySuggestions.classList.add('hidden');
+                }
+            });
+            document.addEventListener('click', (e) => { if (e.target !== cityInput) citySuggestions.classList.add('hidden'); });
+        }
+
+        // --- EVENT LISTENERS ---
+        if(menuButton) menuButton.addEventListener('click', toggleMenu);
+        if(overlay) overlay.addEventListener('click', toggleMenu);
+        addCompanionBtn.addEventListener('click', addCompanionField);
+        companionsContainer.addEventListener('click', e => {
+            if (e.target.closest('.remove-companion-btn')) e.target.closest('.flex').remove();
         });
-        companionsContainer.addEventListener('click', (e) => { if (e.target.closest('.remove-companion-btn')) { e.target.closest('.flex').remove(); } });
+        setupAutocomplete();
 
-        // --- FIREBASE CONFIG & INITIALIZATION (RUNS AFTER UI) ---
-        let db, requestsCollection;
+        travelForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!db) {
+                errorMessage.textContent = 'A ligação à base de dados falhou. Não é possível salvar.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
 
-        async function initializeFirebase() {
+            const formData = new FormData(travelForm);
+            const companions = Array.from(document.querySelectorAll('#companions-container input')).map(input => input.value).filter(Boolean);
+            const id = Date.now().toString();
+            
+            const newRequest = {
+                id: id,
+                patientName: formData.get('patient-name'),
+                travelDate: document.getElementById('travel-date').value,
+                appointmentTime: document.getElementById('appointment-time').value,
+                city: formData.get('city'),
+                location: formData.get('location'),
+                transportType: formData.get('transport-type'),
+                boardingLocation: formData.get('boarding-location'),
+                observations: formData.get('observations'),
+                companions: companions,
+                status: 'Pendente'
+            };
+
             try {
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
+                const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
+                await setDoc(doc(requestsCollection, id), newRequest);
+                
+                alert('Solicitação de viagem salva com sucesso!');
+                travelForm.reset();
+                document.querySelectorAll('.flatpickr-input').forEach(input => input._flatpickr.clear());
+                companionsContainer.innerHTML = '';
+            } catch (error) {
+                console.error("Erro ao salvar solicitação:", error);
+                errorMessage.textContent = 'Ocorreu um erro ao salvar os dados.';
+                errorMessage.classList.remove('hidden');
+            }
+        });
+
+        // --- FIREBASE INITIALIZATION ---
+        async function initializeFirebase() {
+            try {
                 const firebaseConfig = typeof __firebase_config !== 'undefined' 
                     ? JSON.parse(__firebase_config) 
                     : {
@@ -204,69 +265,29 @@
                         messagingSenderId: "747365724187",
                         appId: "1:747365724187:web:4056286c794834f69f48be"
                       };
-                
                 const app = initializeApp(firebaseConfig);
                 const auth = getAuth(app);
                 db = getFirestore(app);
-                requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
                 
                 if (typeof __firebase_config !== 'undefined' && typeof __initial_auth_token !== 'undefined') {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-                 console.log("Firebase conectado com sucesso.");
+
+                submitBtn.disabled = false;
+                errorMessage.classList.add('hidden');
+
             } catch (error) {
                 console.error("Erro na inicialização ou autenticação do Firebase:", error);
-                alert("Não foi possível conectar à base de dados. A função de salvar está desativada. Verifique a consola para mais detalhes.");
+                errorMessage.textContent = 'Não foi possível conectar à base de dados. Verifique a configuração do Firebase.';
+                errorMessage.classList.remove('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
             }
         }
 
-        initializeFirebase(); // Connect to Firebase after UI is ready
-
-        // Form submission logic
-        travelForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!db) {
-                alert("A conexão com a base de dados falhou. Não é possível salvar.");
-                return;
-            }
-
-            const formData = new FormData(travelForm);
-            const companions = Array.from(document.querySelectorAll('#companions-container input')).map(input => input.value.trim()).filter(Boolean);
-            const id = Date.now().toString();
-
-            const newRequest = {
-                id: id,
-                patientName: formData.get('patient-name'),
-                travelDate: datePicker.selectedDates[0] ? datePicker.formatDate(datePicker.selectedDates[0], "Y-m-d") : "",
-                appointmentTime: timePicker.input.value,
-                city: document.getElementById('city').value,
-                location: formData.get('location'),
-                transportType: document.getElementById('transport-type').value,
-                boardingLocation: document.getElementById('boarding-location').value,
-                observations: document.getElementById('observations').value,
-                companions: companions,
-                status: 'Pendente'
-            };
-
-            if (!newRequest.travelDate || !newRequest.appointmentTime || !newRequest.patientName || !newRequest.city || !newRequest.location || !newRequest.transportType || !newRequest.boardingLocation) {
-                alert("Por favor, preencha todos os campos obrigatórios.");
-                return;
-            }
-
-            try {
-                await setDoc(doc(requestsCollection, id), newRequest);
-                alert('Solicitação de viagem salva com sucesso!');
-                travelForm.reset();
-                companionsContainer.innerHTML = '';
-                datePicker.clear();
-                timePicker.clear();
-            } catch (error) {
-                console.error("Erro ao salvar a solicitação: ", error);
-                alert("Ocorreu um erro ao salvar a solicitação.");
-            }
-        });
+        initializeFirebase();
     });
 </script>
 </body>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - TFD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #report-output, #report-output * {
+                visibility: visible;
+            }
+            #report-output {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="flex h-screen bg-gray-200 font-sans">
+    <!-- Sidebar -->
+    <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20 no-print">
+        <div class="flex items-center border-b pb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h1 class="text-xl font-bold text-gray-800 ml-3">TFD Paraguaçu</h1>
+        </div>
+        <nav class="mt-6">
+            <a href="index.html" class="flex items-center py-2 px-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="mx-3">Início</span>
+            </a>
+            <a href="cadastro_viagem.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <span class="mx-3">Cadastro de Viagem</span>
+            </a>
+            <a href="roteiro.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
+                <span class="mx-3">Roteiro de Viagens</span>
+            </a>
+            <a href="solicitacoes_pendentes.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="mx-3">Solicitações Pendentes</span>
+            </a>
+             <a href="relatorios.html" class="flex items-center py-2 px-4 mt-4 text-gray-700 bg-gray-100 rounded-lg border-r-4 border-blue-500">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="mx-3 font-semibold">Relatórios</span>
+            </a>
+        </nav>
+    </div>
+    <!-- Content -->
+    <div class="flex-1 flex flex-col">
+        <header class="bg-white shadow flex items-center justify-between p-4 no-print">
+            <h1 class="text-xl font-bold text-gray-800">Relatórios</h1>
+            <button id="menu-button" class="text-gray-500 focus:outline-none lg:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </header>
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+            <div class="w-full bg-white p-6 rounded-2xl shadow-lg">
+                <div class="no-print">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Relatório de Viagens por Período</h2>
+                    <div class="flex flex-col md:flex-row gap-4 items-center p-4 bg-gray-50 rounded-lg border mb-6">
+                        <div>
+                            <label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Início</label>
+                            <input type="text" id="start-date" class="p-2 border rounded-lg bg-white" placeholder="Selecione a data...">
+                        </div>
+                        <div>
+                            <label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Fim</label>
+                            <input type="text" id="end-date" class="p-2 border rounded-lg bg-white" placeholder="Selecione a data...">
+                        </div>
+                        <button id="generate-report-btn" class="self-end bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700">Gerar Relatório</button>
+                    </div>
+                </div>
+
+                <div id="report-output">
+                    <!-- O resultado do relatório aparecerá aqui -->
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden no-print"></div>
+</div>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- UI ELEMENTS (RUNS FIRST) ---
+        const menuButton = document.getElementById('menu-button'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay');
+        const generateReportBtn = document.getElementById('generate-report-btn');
+        const reportOutputDiv = document.getElementById('report-output');
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        let allItineraries = [];
+        let allRequests = [];
+
+        // --- UI FUNCTIONS ---
+        const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
+        
+        // Initialize date pickers
+        let endDatePickerInstance;
+        const startDatePickerInstance = flatpickr(startDateInput, {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d de F de Y",
+            locale: "pt",
+            onChange: function(selectedDates) {
+                if (endDatePickerInstance) {
+                    endDatePickerInstance.set('minDate', selectedDates[0]);
+                }
+            }
+        });
+        endDatePickerInstance = flatpickr(endDateInput, {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d de F de Y",
+            locale: "pt",
+        });
+
+        function generateReport() {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!startDate || !endDate) {
+                alert("Por favor, selecione a data de início e de fim.");
+                return;
+            }
+
+            const filteredItineraries = allItineraries.filter(itinerary => {
+                return itinerary.date >= startDate && itinerary.date <= endDate;
+            });
+
+            filteredItineraries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            reportOutputDiv.innerHTML = ''; // Limpa o relatório anterior
+
+            if (filteredItineraries.length === 0) {
+                reportOutputDiv.innerHTML = '<p class="text-center text-gray-500 py-4">Nenhuma viagem encontrada para o período selecionado.</p>';
+                return;
+            }
+
+            let reportHTML = `
+                <div class="flex justify-between items-center mb-4">
+                     <h3 class="text-xl font-bold text-gray-800">Resultado do Relatório</h3>
+                     <button id="print-btn" class="no-print bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700">Imprimir</button>
+                </div>
+                <p class="mb-4 text-gray-600">Período de ${new Date(startDate+'T00:00:00').toLocaleDateString('pt-BR')} a ${new Date(endDate+'T00:00:00').toLocaleDateString('pt-BR')}. Total de ${filteredItineraries.length} viagens.</p>
+            `;
+
+            filteredItineraries.forEach(itinerary => {
+                const patientsInItinerary = allRequests.filter(req => itinerary.patientIds.includes(req.id));
+                const formattedDate = new Date(itinerary.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+                reportHTML += `
+                    <div class="border-t-4 border-blue-500 rounded-b-lg shadow-lg p-4 mb-6 bg-gray-50">
+                        <h4 class="text-lg font-bold">${formattedDate} - ${itinerary.time}</h4>
+                        <p><strong>Motorista:</strong> ${itinerary.driver}</p>
+                        <p><strong>Veículo:</strong> ${itinerary.vehicle}</p>
+                        <div class="mt-2">
+                            <h5 class="font-semibold">Pacientes:</h5>
+                            <ul class="list-disc list-inside ml-4 text-sm">
+                                ${patientsInItinerary.map(p => `
+                                    <li>
+                                        ${p.patientName} (${p.city} - ${p.location})
+                                        ${p.companions.length > 0 ? ` / Acompanhantes: ${p.companions.join(', ')}` : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            reportOutputDiv.innerHTML = reportHTML;
+            document.getElementById('print-btn').addEventListener('click', () => window.print());
+        }
+        
+        // --- EVENT LISTENERS ---
+        if(menuButton) menuButton.addEventListener('click', toggleMenu);
+        if(overlay) overlay.addEventListener('click', toggleMenu);
+        generateReportBtn.addEventListener('click', generateReport);
+
+        // --- FIREBASE INITIALIZATION & REALTIME LISTENERS ---
+        async function initializeFirebase() {
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
+                const firebaseConfig = typeof __firebase_config !== 'undefined' 
+                    ? JSON.parse(__firebase_config) 
+                    : {
+                        apiKey: "AIzaSyAWWhu2U6ZJ9AQYZ_Awa2CnciewwY2x71E",
+                        authDomain: "tfd-transporte.firebaseapp.com",
+                        projectId: "tfd-transporte",
+                        storageBucket: "tfd-transporte.appspot.com",
+                        messagingSenderId: "747365724187",
+                        appId: "1:747365724187:web:4056286c794834f69f48be"
+                      };
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                
+                if (typeof __firebase_config !== 'undefined' && typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                const itinerariesCollection = collection(db, `artifacts/${appId}/public/data/itineraries`);
+                onSnapshot(itinerariesCollection, (snapshot) => {
+                    allItineraries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                });
+
+                const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
+                onSnapshot(requestsCollection, (snapshot) => {
+                    allRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    reportOutputDiv.innerHTML = '<p class="text-center text-gray-500 py-4">Selecione um período para gerar o relatório.</p>';
+                });
+
+            } catch (error) {
+                console.error("Erro na inicialização ou autenticação do Firebase:", error);
+                reportOutputDiv.innerHTML = '<p class="text-center text-red-500 py-4">Não foi possível conectar à base de dados. Verifique a configuração do Firebase.</p>';
+            }
+        }
+
+        initializeFirebase();
+    });
+</script>
+</body>
+</html>
+

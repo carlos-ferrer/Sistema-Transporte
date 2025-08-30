@@ -6,6 +6,7 @@
     <title>Roteiro de Viagens</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style> 
         body { font-family: 'Inter', sans-serif; } 
         .autocomplete-suggestions { border: 1px solid #ddd; max-height: 150px; overflow-y: auto; position: absolute; width: 100%; z-index: 10; background-color: white; border-radius: 0 0 0.5rem 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -39,6 +40,10 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 <span class="mx-3">Solicitações Pendentes</span>
             </a>
+             <a href="relatorios.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="mx-3">Relatórios</span>
+            </a>
         </nav>
     </div>
     <!-- Content -->
@@ -59,7 +64,7 @@
                 </div>
                 <!-- Filtros -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg border">
-                    <input type="date" id="filter-date" class="p-2 border rounded-lg" title="Filtrar por data">
+                    <input type="text" id="filter-date" class="p-2 border rounded-lg bg-white" placeholder="Filtrar por data">
                     <div class="relative">
                        <input type="text" id="filter-vehicle" placeholder="Filtrar por veículo..." class="w-full p-2 border rounded-lg" autocomplete="off">
                        <div id="vehicle-suggestions" class="autocomplete-suggestions hidden"></div>
@@ -102,6 +107,10 @@
     </div>
 </div>
 
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+
 <!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -109,24 +118,42 @@
     import { getFirestore, collection, onSnapshot, doc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     document.addEventListener('DOMContentLoaded', () => {
-        // --- UI ELEMENTS & DATA (RUNS FIRST) ---
+        // --- UI ELEMENTS (RUNS FIRST) ---
         const menuButton = document.getElementById('menu-button'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebar-overlay');
         const itinerariesListDiv = document.getElementById('itineraries-list');
         const filterDate = document.getElementById('filter-date'), filterVehicle = document.getElementById('filter-vehicle'), filterDestination = document.getElementById('filter-destination'), filterDriver = document.getElementById('filter-driver');
         const viewModal = document.getElementById('view-modal'), viewModalContent = document.getElementById('view-modal-content');
         const deleteConfirmModal = document.getElementById('delete-confirm-modal'), cancelDeleteBtn = document.getElementById('cancel-delete-btn'), confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-        
+
+        // --- DATA ---
         const CITIES = ["Adamantina - SP", "Alto Garças - MT", "Álvares Machado - SP", "Araçatuba - SP", "Assis - SP", "Avaré - SP", "Barretos - SP", "Bauru - SP", "Botucatu - SP", "Campinas - SP", "Cândido Mota - SP", "Chavantes - SP", "Fernandópolis - SP", "Franca - SP", "Garça - SP", "Herculândia - SP", "Ilha Solteira - SP", "Jales - SP", "Jaú - SP", "Jundiaí - SP", "Londrina - PR", "Marialva - PR", "Marília - SP", "Osvaldo Cruz - SP", "Ourinhos - SP", "Palmital - SP", "Paraguaçu Paulista - SP", "Pardinho - SP", "Penápolis - SP", "Pirapozinho - SP", "Presidente Prudente - SP", "Presidente Venceslau - SP", "Rancharia - SP", "Ribeirão Preto - SP", "Rosana - SP", "Salto - SP", "Santa Cruz do Rio Pardo - SP", "Santos - SP", "São José do Rio Preto - SP", "São Paulo - SP", "Sorocaba - SP", "Tarumã - SP", "Taubaté - SP", "Tupã - SP", "Valinhos - SP"];
         const DRIVERS = ["A definir", "Ademir Pacheco 1", "Ademir Pacheco 2", "Ademir Pacheco 3", "Adilson Adolfo Itelvino 1", "Adilson Adolfo Itelvino 2", "Adilson Adolfo Itelvino 3", "Adriano Aparecido Paschoa 1", "Adriano Aparecido Paschoa 2", "Adriano Aparecido Paschoa 3", "Almir Rogerio da Silva 1", "Almir Rogerio da Silva 2", "Almir Rogerio da Silva 3", "Carlos Antonio Rocha 1", "Carlos Antonio Rocha 2", "Carlos Antonio Rocha 3", "Claudio Rodrigues Santana 1", "Claudio Rodrigues Santana 2", "Claudio Rodrigues Santana 3", "Daniel Ricardo Pontes 1", "Daniel Ricardo Pontes 2", "Daniel Ricardo Pontes 3", "Jefferson Sales Prado 1", "Jefferson Sales Prado 2", "Jefferson Sales Prado 3", "Leandro Muniz Balbino 1", "Leandro Muniz Balbino 2", "Leandro Muniz Balbino 3", "Marcelo Dias Paiao 1", "Marcelo Dias Paiao 2", "Marcelo Dias Paiao 3", "Marcio Antonio dos Reis 1", "Marcio Antonio dos Reis 2", "Marcio Antonio dos Reis 3", "Marcos Aurelio de Oliveira 1", "Marcos Aurelio de Oliveira 2", "Marcos Aurelio de Oliveira 3", "Paulo Cesar Rosa de Barros 1", "Paulo Cesar Rosa de Barros 2", "Paulo Cesar Rosa de Barros 3", "Samara Batista da Silva 1", "Samara Batista da Silva 2", "Samara Batista da Silva 3", "Sebastiao Aparecido Pereira 1", "Sebastiao Aparecido Pereira 2", "Sebastiao Aparecido Pereira 3", "Silvio Andrade Garcia 1", "Silvio Andrade Garcia 2", "Silvio Andrade Garcia 3", "Valmir de Paula Ribeiro 1", "Valmir de Paula Ribeiro 2", "Valmir de Paula Ribeiro 3"];
         const FROTA_VEHICLES = ["Frota 306 - BNZ-3793", "Frota 318 - EGI-6209", "Frota 372 - FRU-2815", "Frota 392 - GCH-7877", "Frota 396 - FTS-1237", "Frota 397 - FOE-7011", "Frota 418 - GBX-4239", "Frota 419 - GDY-7265", "Frota 426 - FXQ-5064", "Frota 428 - GEB-8322", "Frota 429 - GBT-5687", "Frota 435 - ESM-7966", "Frota 439 - ERD-0542", "Frota 448 - FSM-6673", "Frota 454 - FUK-8A34", "Frota 455 - FSA-8F66", "Frota 462 - CNR-6C51", "Frota 463 - EOJ-9C01", "Frota 467 - GBO-8C25", "Frota 470 - EWZ-1C33", "Frota 480 - FUH-5H54", "Frota 481 - FWO-6F86", "Frota 482 - FNT-3C46", "Frota 483 - FYO-1F74", "Frota 494 - FRC-9172", "Frota 495 - FUH-5J32", "Frota 498 - FST-1A72", "Frota 503 - FJF-5A63", "Frota 515 - GDY-4A91", "Frota 516 - FXC-3E81", "Frota 537 - STU-1J61", "Frota 538 - STJ-2G66", "Frota 547 - FQY-0I61", "Frota 548 - SUM-0E46", "Frota 555 - FCQ-2H31", "Frota 556 - EXF-1H41", "Frota 557 - TJM-3B92", "Frota 558 - TLA-0E43", "Frota 569 - TKE-9F75"];
-        const ALL_VEHICLES = [ ...FROTA_VEHICLES, ...Array.from({ length: 5 }, (_, i) => `A definir - Ambulância ${i + 1}`), ...Array.from({ length: 10 }, (_, i) => `A definir - Exclusivo ${i + 1}`), ...Array.from({ length: 25 }, (_, i) => `A definir - Coletivo ${i + 1}`), ...Array.from({ length: 3 }, (_, i) => `A definir - Hemodiálise ${i + 1}`) ].sort();
-        
-        let allItineraries = [], allRequests = [], itineraryToDeleteId = null, db, itinerariesCollection, requestsCollection;
+        const ALL_VEHICLES = [
+            ...FROTA_VEHICLES,
+            ...Array.from({ length: 5 }, (_, i) => `A definir - Ambulância ${i + 1}`),
+            ...Array.from({ length: 10 }, (_, i) => `A definir - Exclusivo ${i + 1}`),
+            ...Array.from({ length: 25 }, (_, i) => `A definir - Coletivo ${i + 1}`),
+            ...Array.from({ length: 3 }, (_, i) => `A definir - Hemodiálise ${i + 1}`)
+        ];
+
+        let allItineraries = [];
+        let allRequests = [];
+        let itineraryToDeleteId = null;
+        let db;
 
         // --- UI FUNCTIONS ---
         const toggleMenu = () => { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); };
-        const openModal = (modal) => { modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10); };
-        const closeModal = (modal) => { modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 250); };
+        
+        flatpickr(filterDate, {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            locale: "pt",
+            onChange: function(selectedDates, dateStr, instance) {
+                renderItineraries();
+            }
+        });
         
         function setupAutocomplete(input, suggestionsDiv, data) {
             input.addEventListener('input', () => {
@@ -143,17 +170,26 @@
                         div.addEventListener('click', () => { input.value = item; suggestionsDiv.classList.add('hidden'); renderItineraries(); });
                         suggestionsDiv.appendChild(div);
                     });
-                } else { suggestionsDiv.classList.add('hidden'); }
+                } else {
+                    suggestionsDiv.classList.add('hidden');
+                }
                 renderItineraries();
             });
             document.addEventListener('click', (e) => { if (e.target !== input) suggestionsDiv.classList.add('hidden'); });
         }
         
         function renderItineraries() {
-            if (!db) return; 
-            const date = filterDate.value, vehicle = filterVehicle.value.toLowerCase(), destination = filterDestination.value.toLowerCase(), driver = filterDriver.value.toLowerCase();
-            const filteredItineraries = allItineraries.filter(it => {
-                return (!date || it.date === date) && (!vehicle || it.vehicle.toLowerCase().includes(vehicle)) && (!driver || it.driver.toLowerCase().includes(driver)) && (!destination || it.destinations.some(d => d.toLowerCase().includes(destination)));
+            const date = filterDate.value;
+            const vehicle = filterVehicle.value.toLowerCase();
+            const destination = filterDestination.value.toLowerCase();
+            const driver = filterDriver.value.toLowerCase();
+
+            const filteredItineraries = allItineraries.filter(itinerary => {
+                const hasDate = !date || itinerary.date === date;
+                const hasVehicle = !vehicle || itinerary.vehicle.toLowerCase().includes(vehicle);
+                const hasDriver = !driver || itinerary.driver.toLowerCase().includes(driver);
+                const hasDestination = !destination || itinerary.destinations.some(d => d.toLowerCase().includes(destination));
+                return hasDate && hasVehicle && hasDriver && hasDestination;
             });
             
             itinerariesListDiv.innerHTML = '';
@@ -183,9 +219,14 @@
             });
         }
         
+        function openModal(modal) { modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10); }
+        function closeModal(modal) { modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 250); }
+
         async function showViewModal(itineraryId) {
             const itinerary = allItineraries.find(i => i.id === itineraryId);
+            if (!itinerary) return;
             const patients = allRequests.filter(r => itinerary.patientIds.includes(r.id));
+            
             const formattedDate = new Date(itinerary.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
             viewModalContent.innerHTML = `
@@ -203,7 +244,12 @@
                         <div>
                             <h4 class="font-semibold text-lg mb-2">Pacientes (${patients.length})</h4>
                             <ul class="list-disc list-inside space-y-2 max-h-60 overflow-y-auto pr-2">
-                                ${patients.map(p => `<li><strong>${p.patientName}</strong> - ${p.appointmentTime} - ${p.city} (${p.location})${p.companions.length > 0 ? `<br><small class="text-gray-500 pl-4">Acompanhantes: ${p.companions.join(', ')}</small>` : ''}</li>`).join('')}
+                                ${patients.map(p => `
+                                    <li>
+                                        <strong>${p.patientName}</strong> - ${p.appointmentTime} - ${p.city} (${p.location})
+                                        ${p.companions.length > 0 ? `<br><small class="text-gray-500 pl-4">Acompanhantes: ${p.companions.join(', ')}</small>` : ''}
+                                    </li>
+                                `).join('')}
                             </ul>
                         </div>
                     </div>
@@ -214,10 +260,13 @@
         async function deleteItinerary() {
             if (!itineraryToDeleteId) return;
             const itinerary = allItineraries.find(i => i.id === itineraryToDeleteId);
+            
             try {
                 const batch = writeBatch(db);
-                batch.delete(doc(itinerariesCollection, itineraryToDeleteId));
-                itinerary.patientIds.forEach(patientId => { batch.update(doc(requestsCollection, patientId), { status: "Pendente" }); });
+                batch.delete(doc(db, `artifacts/${window.appId}/public/data/itineraries`, itineraryToDeleteId));
+                itinerary.patientIds.forEach(patientId => {
+                    batch.update(doc(db, `artifacts/${window.appId}/public/data/travelRequests`, patientId), { status: "Pendente" });
+                });
                 await batch.commit();
             } catch (error) {
                 console.error("Erro ao excluir roteiro: ", error);
@@ -231,23 +280,31 @@
         // --- EVENT LISTENERS ---
         if(menuButton) menuButton.addEventListener('click', toggleMenu);
         if(overlay) overlay.addEventListener('click', toggleMenu);
-        [filterDate, filterVehicle, filterDestination, filterDriver].forEach(el => el.addEventListener('input', renderItineraries));
+        
+        [filterVehicle, filterDestination, filterDriver].forEach(el => {
+            el.addEventListener('input', renderItineraries);
+        });
         
         itinerariesListDiv.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.view-btn');
             const deleteBtn = e.target.closest('.delete-btn');
             if (viewBtn) showViewModal(viewBtn.dataset.id);
-            if (deleteBtn) { itineraryToDeleteId = deleteBtn.dataset.id; openModal(deleteConfirmModal); }
+            if (deleteBtn) {
+                itineraryToDeleteId = deleteBtn.dataset.id;
+                openModal(deleteConfirmModal);
+            }
         });
 
-        viewModal.addEventListener('click', (e) => { if (e.target === viewModal || e.target.closest('#close-view-modal-btn')) closeModal(viewModal); });
+        viewModal.addEventListener('click', (e) => { 
+            if (e.target === viewModal || e.target.closest('#close-view-modal-btn')) closeModal(viewModal); 
+        });
         cancelDeleteBtn.addEventListener('click', () => { closeModal(deleteConfirmModal); itineraryToDeleteId = null; });
         confirmDeleteBtn.addEventListener('click', deleteItinerary);
         
         // --- FIREBASE INITIALIZATION & REALTIME LISTENERS ---
         async function initializeFirebase() {
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
+                window.appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
                 const firebaseConfig = typeof __firebase_config !== 'undefined' 
                     ? JSON.parse(__firebase_config) 
                     : {
@@ -261,8 +318,6 @@
                 const app = initializeApp(firebaseConfig);
                 const auth = getAuth(app);
                 db = getFirestore(app);
-                itinerariesCollection = collection(db, `artifacts/${appId}/public/data/itineraries`);
-                requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
 
                 if (typeof __firebase_config !== 'undefined' && typeof __initial_auth_token !== 'undefined') {
                     await signInWithCustomToken(auth, __initial_auth_token);
@@ -270,22 +325,30 @@
                     await signInAnonymously(auth);
                 }
                 
+                const itinerariesCollection = collection(db, `artifacts/${window.appId}/public/data/itineraries`);
+                const requestsCollection = collection(db, `artifacts/${window.appId}/public/data/travelRequests`);
+
                 onSnapshot(itinerariesCollection, (snapshot) => {
                     allItineraries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     allItineraries.sort((a, b) => new Date(b.date) - new Date(a.date));
                     renderItineraries();
-                });
-                onSnapshot(requestsCollection, (snapshot) => {
-                    allRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                }, (error) => {
+                    console.error("Erro ao carregar roteiros:", error);
+                    itinerariesListDiv.innerHTML = '<p class="text-center text-red-500 py-4">Não foi possível carregar os roteiros. Verifique a ligação.</p>';
                 });
 
-            } catch (error) {
-                console.error("Erro na inicialização ou autenticação do Firebase:", error);
-                itinerariesListDiv.innerHTML = '<p class="text-center text-red-500 py-4">Não foi possível conectar à base de dados. Verifique a configuração do Firebase.</p>';
+                onSnapshot(requestsCollection, (snapshot) => {
+                    allRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                }, (error) => {
+                     console.error("Erro ao carregar solicitações:", error);
+                });
+
+            } catch(error) {
+                console.error("Erro na inicialização do Firebase: ", error);
+                 itinerariesListDiv.innerHTML = '<p class="text-center text-red-500 py-4">Erro de configuração do Firebase. Verifique a consola.</p>';
             }
         }
         
-        // --- INITIALIZATION ---
         setupAutocomplete(filterVehicle, document.getElementById('vehicle-suggestions'), ALL_VEHICLES);
         setupAutocomplete(filterDestination, document.getElementById('destination-suggestions'), CITIES);
         setupAutocomplete(filterDriver, document.getElementById('driver-suggestions'), DRIVERS);

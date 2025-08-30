@@ -3,54 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TFD Paraguaçu Paulista - Início</title>
+    <title>Página Principal - TFD Paraguaçu Paulista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+    </style>
 </head>
 <body class="bg-gray-100">
-    <div class="flex flex-col h-screen">
-        <header class="bg-white shadow-md p-4">
-            <div class="container mx-auto flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <h1 class="text-2xl font-bold text-gray-800">TFD Paraguaçu Paulista</h1>
-                </div>
+    <div class="flex flex-col items-center justify-center min-h-screen p-4">
+        <header class="text-center mb-12">
+            <div class="flex items-center justify-center gap-4">
+                <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800">TFD Paraguaçu Paulista</h1>
             </div>
+            <p class="text-gray-500 mt-4 text-lg">Sistema de Gerenciamento de Viagens</p>
         </header>
-        <main class="flex-1 flex items-center justify-center p-4">
-            <div class="w-full max-w-4xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="text-4xl font-bold text-gray-800">Bem-vindo ao Sistema de Gerenciamento</h2>
-                    <p class="text-gray-600 mt-2">Selecione um módulo abaixo para começar a trabalhar.</p>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+            <!-- Card: Cadastro de Viagem -->
+            <a href="cadastro_viagem.html" class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center">
+                <div class="bg-blue-100 p-4 rounded-full mb-4">
+                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Card: Cadastro de Viagem -->
-                    <a href="cadastro_viagem.html" class="block p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 text-blue-600 mb-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Cadastro de Viagem</h3>
-                        <p class="text-gray-500 mt-2">Crie novas solicitações de viagem para pacientes.</p>
-                    </a>
-                    <!-- Card: Roteiro de Viagens -->
-                    <a href="roteiro.html" class="block p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Roteiro de Viagens</h3>
-                        <p class="text-gray-500 mt-2">Crie, visualize e gerencie as viagens agendadas.</p>
-                    </a>
-                    <!-- Card: Solicitações Pendentes -->
-                    <a href="solicitacoes_pendentes.html" class="block p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 text-yellow-600 mb-4">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Solicitações Pendentes</h3>
-                        <p class="text-gray-500 mt-2">Visualize e gerencie as solicitações que aguardam agendamento.</p>
-                    </a>
+                <h2 class="text-xl font-bold text-gray-800">Nova Solicitação</h2>
+                <p class="text-gray-500 mt-2">Cadastre uma nova solicitação de viagem para um paciente.</p>
+            </a>
+            
+            <!-- Card: Roteiro de Viagens -->
+            <a href="roteiro.html" class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center">
+                <div class="bg-green-100 p-4 rounded-full mb-4">
+                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
                 </div>
-            </div>
+                <h2 class="text-xl font-bold text-gray-800">Roteiro de Viagens</h2>
+                <p class="text-gray-500 mt-2">Crie, visualize e gerencie todos os roteiros de viagens.</p>
+            </a>
+
+            <!-- Card: Solicitações Pendentes -->
+            <a href="solicitacoes_pendentes.html" class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center">
+                <div class="bg-yellow-100 p-4 rounded-full mb-4">
+                    <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">Solicitações Pendentes</h2>
+                <p class="text-gray-500 mt-2">Visualize e edite todas as solicitações que ainda não foram agendadas.</p>
+            </a>
+
+            <!-- Card: Relatórios -->
+            <a href="relatorios.html" class="group bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center">
+                 <div class="bg-purple-100 p-4 rounded-full mb-4">
+                    <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">Relatórios</h2>
+                <p class="text-gray-500 mt-2">Gere e imprima relatórios detalhados das viagens por período.</p>
+            </a>
         </main>
     </div>
 </body>
