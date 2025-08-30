@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Novo Roteiro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-gray-100">
+<div class="flex h-screen bg-gray-200 font-sans">
+    <!-- Sidebar -->
+    <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20">
+        <div class="flex items-center border-b pb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h1 class="text-xl font-bold text-gray-800 ml-3">Sistema de Viagem</h1>
+        </div>
+        <nav class="mt-6">
+            <a href="cadastro_viagem.html" class="flex items-center py-2 px-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <span class="mx-3">Cadastro de Viagem</span>
+            </a>
+            <a href="gerenciar_cidades.html" class="flex items-center py-2 px-4 mt-4 text-gray-600 rounded-lg hover:bg-gray-100">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="mx-3">Gerenciar Cidades</span>
+            </a>
+            <a href="roteiro.html" class="flex items-center py-2 px-4 mt-4 text-gray-700 bg-gray-100 rounded-lg border-r-4 border-blue-500">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 16.382V5.618a1 1 0 00-1.447-.894L15 7m-6 3l6-3"></path></svg>
+                <span class="mx-3 font-semibold">Roteiro de Viagens</span>
+            </a>
+        </nav>
+    </div>
+    <!-- Content -->
+    <div class="flex-1 flex flex-col">
+         <header class="bg-white shadow flex items-center justify-between p-4">
+            <h1 class="text-xl font-bold text-gray-800">Criar Novo Roteiro</h1>
+            <button id="menu-button" class="text-gray-500 focus:outline-none lg:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </header>
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+            <div class="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-lg mx-auto">
+                <!-- Seletor de Data -->
+                <div class="mb-6">
+                    <label for="itinerary-date" class="block text-lg font-semibold text-gray-700 mb-2">1. Selecione a Data da Viagem</label>
+                    <input type="date" id="itinerary-date" class="w-full md:w-1/3 p-2 border rounded-lg">
+                </div>
+                
+                <!-- Lista de Pacientes Pendentes -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">2. Selecione os Pacientes para este Roteiro</h2>
+                    <div id="pending-patients-list" class="max-h-96 overflow-y-auto border rounded-lg p-4 bg-gray-50">
+                       <p class="text-gray-500">Selecione uma data para ver os pacientes com viagens pendentes.</p>
+                    </div>
+                </div>
+
+                <!-- Detalhes do Roteiro -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">3. Preencha os Detalhes do Roteiro</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="vehicle" class="block text-sm font-medium text-gray-600 mb-1">Veículo <span class="text-red-500">*</span></label>
+                            <input type="text" id="vehicle" placeholder="Ex: Ambulância ABC-1234" required class="w-full p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label for="driver" class="block text-sm font-medium text-gray-600 mb-1">Motorista <span class="text-red-500">*</span></label>
+                            <input type="text" id="driver" placeholder="Nome do motorista" required class="w-full p-2 border rounded-lg">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ações -->
+                <div class="flex justify-end gap-4 border-t pt-6">
+                    <a href="roteiro.html" class="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300">Cancelar</a>
+                    <button id="save-itinerary-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">Salvar Roteiro</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden"></div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.getElementById('menu-button');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (menuButton) menuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        if (overlay) overlay.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        const dateInput = document.getElementById('itinerary-date');
+        const patientsListDiv = document.getElementById('pending-patients-list');
+        const saveBtn = document.getElementById('save-itinerary-btn');
+        const vehicleInput = document.getElementById('vehicle');
+        const driverInput = document.getElementById('driver');
+
+        const REQUESTS_KEY = 'travelRequests';
+        const ITINERARIES_KEY = 'travelItineraries';
+
+        dateInput.addEventListener('change', () => {
+            const selectedDate = dateInput.value;
+            if (!selectedDate) {
+                patientsListDiv.innerHTML = '<p class="text-gray-500">Selecione uma data para ver os pacientes com viagens pendentes.</p>';
+                return;
+            }
+            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+            const pendingRequests = allRequests.filter(req => req.travelDate === selectedDate && req.status === 'Pendente');
+
+            patientsListDiv.innerHTML = '';
+            if (pendingRequests.length === 0) {
+                patientsListDiv.innerHTML = `<p class="text-gray-500">Nenhum paciente pendente para a data ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR')}.</p>`;
+                return;
+            }
+            
+            pendingRequests.forEach(req => {
+                const patientDiv = document.createElement('div');
+                patientDiv.className = 'flex items-center justify-between p-3 border-b last:border-b-0';
+                patientDiv.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="patient-${req.id}" data-request-id="${req.id}" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <label for="patient-${req.id}" class="flex flex-col cursor-pointer">
+                            <span class="font-semibold text-gray-800">${req.patientName}</span>
+                            <span class="text-sm text-gray-500">${req.city} - ${req.location}</span>
+                        </label>
+                    </div>
+                    <div class="text-right">
+                         <p class="text-sm font-medium text-gray-700">${req.appointmentTime}</p>
+                         <p class="text-xs text-white rounded-full px-2 py-0.5 inline-block ${req.transportType === 'Ambulância' ? 'bg-red-500' : 'bg-blue-500'}">${req.transportType}</p>
+                    </div>
+                `;
+                patientsListDiv.appendChild(patientDiv);
+            });
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const selectedDate = dateInput.value;
+            const vehicle = vehicleInput.value.trim();
+            const driver = driverInput.value.trim();
+            const selectedCheckboxes = document.querySelectorAll('#pending-patients-list input[type="checkbox"]:checked');
+
+            if (!selectedDate || !vehicle || !driver || selectedCheckboxes.length === 0) {
+                alert('Por favor, preencha todos os campos obrigatórios e selecione ao menos um paciente.');
+                return;
+            }
+
+            const allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+            const selectedPatientIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.dataset.requestId));
+
+            const patientsForItinerary = [];
+            allRequests.forEach(req => {
+                if (selectedPatientIds.includes(req.id)) {
+                    req.status = 'Agendado';
+                    patientsForItinerary.push(req);
+                }
+            });
+            
+            const newItinerary = { id: Date.now(), date: selectedDate, vehicle, driver, patients: patientsForItinerary };
+            const allItineraries = JSON.parse(localStorage.getItem(ITINERARIES_KEY)) || [];
+            allItineraries.push(newItinerary);
+
+            localStorage.setItem(REQUESTS_KEY, JSON.stringify(allRequests));
+            localStorage.setItem(ITINERARIES_KEY, JSON.stringify(allItineraries));
+
+            alert('Roteiro salvo com sucesso!');
+            window.location.href = 'roteiro.html';
+        });
+    });
+</script>
+</body>
+</html>

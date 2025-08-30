@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Solicitação de Viagem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .autocomplete-suggestions { border: 1px solid #ddd; max-height: 150px; overflow-y: auto; position: absolute; width: 100%; z-index: 10; }
+        .autocomplete-suggestion { padding: 10px; cursor: pointer; }
+        .autocomplete-suggestion:hover { background-color: #f0f0f0; }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="flex h-screen bg-gray-200 font-sans">
+    <!-- Sidebar -->
+    <div id="sidebar" class="h-full p-4 bg-white shadow-lg w-64 fixed lg:static -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20">
+       <div class="flex items-center border-b pb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h1 class="text-xl font-bold text-gray-800 ml-3">Sistema de Viagem</h1>
+        </div>
+        <!-- O menu de navegação completo deve ser inserido aqui -->
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 flex flex-col">
+        <header class="bg-white shadow flex items-center justify-between p-4">
+            <h1 class="text-xl font-bold text-gray-800">Editar Solicitação</h1>
+            <button id="menu-button" class="text-gray-500 focus:outline-none lg:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </header>
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 lg:p-8">
+            <div class="w-full max-w-3xl bg-white p-8 rounded-2xl shadow-lg mx-auto">
+                <header class="mb-8 text-center">
+                    <h1 class="text-3xl font-bold text-gray-800">Editar Solicitação de Viagem</h1>
+                    <p class="text-gray-500 mt-2">Altere os dados necessários e salve.</p>
+                </header>
+                <form id="travelForm" class="space-y-6">
+                    <!-- A estrutura do formulário é idêntica à de cadastro -->
+                    <!-- Campos serão preenchidos via JavaScript -->
+                    <!-- Detalhes da Viagem -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Detalhes da Viagem</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="travel-date" class="block text-sm font-medium text-gray-600 mb-1">Data da Viagem <span class="text-red-500">*</span></label>
+                                <input type="date" id="travel-date" name="travel-date" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label for="appointment-time" class="block text-sm font-medium text-gray-600 mb-1">Hora da Consulta <span class="text-red-500">*</span></label>
+                                <input type="time" id="appointment-time" name="appointment-time" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Informações do Paciente -->
+                    <div>
+                         <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Informações do Paciente</h2>
+                         <input type="text" id="patient-name" name="patient-name" placeholder="Digite o nome completo" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                    </div>
+                    <!-- Destino e Transporte -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Destino e Transporte</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="relative">
+                                <label for="city" class="block text-sm font-medium text-gray-600 mb-1">Cidade <span class="text-red-500">*</span></label>
+                                <input type="text" id="city" name="city" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg" autocomplete="off">
+                                <div id="city-suggestions" class="autocomplete-suggestions bg-white rounded-md shadow-lg hidden"></div>
+                            </div>
+                             <div>
+                                <label for="location" class="block text-sm font-medium text-gray-600 mb-1">Local <span class="text-red-500">*</span></label>
+                                <input type="text" id="location" name="location" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="transport-type" class="block text-sm font-medium text-gray-600 mb-1">Transporte <span class="text-red-500">*</span></label>
+                                <select id="transport-type" name="transport-type" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                                    <option value="Ambulância">Ambulância</option>
+                                    <option value="Exclusivo">Exclusivo</option>
+                                    <option value="Coletivo">Coletivo</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="boarding-location" class="block text-sm font-medium text-gray-600 mb-1">Local de Embarque <span class="text-red-500">*</span></label>
+                                <input type="text" id="boarding-location" name="boarding-location" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Acompanhantes -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Acompanhantes</h2>
+                        <div id="companions-container" class="space-y-4"></div>
+                        <button type="button" id="add-companion-btn" class="mt-4 flex items-center gap-2 text-blue-600 font-semibold py-2 px-4 rounded-lg border-2 border-blue-500 hover:bg-blue-50">
+                            + Adicionar Acompanhante
+                        </button>
+                    </div>
+                    <!-- Observações -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Observações</h2>
+                        <textarea id="observations" name="observations" rows="4" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+                    <div class="pt-6 border-t flex justify-end gap-4">
+                        <a href="solicitacoes_pendentes.html" class="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-lg hover:bg-gray-300">Cancelar</a>
+                        <button type="submit" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black opacity-50 z-10 lg:hidden"></div>
+</div>
+<script>
+// Script para carregar, preencher e salvar o formulário de edição
+document.addEventListener('DOMContentLoaded', () => {
+    const travelForm = document.getElementById('travelForm');
+    const companionsContainer = document.getElementById('companions-container');
+    const addCompanionBtn = document.getElementById('add-companion-btn');
+    const REQUESTS_KEY = 'travelRequests';
+    const params = new URLSearchParams(window.location.search);
+    const requestId = parseInt(params.get('id'));
+
+    let allRequests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+    const requestToEdit = allRequests.find(req => req.id === requestId);
+
+    if (!requestToEdit) {
+        alert('Solicitação não encontrada!');
+        window.location.href = 'solicitacoes_pendentes.html';
+        return;
+    }
+
+    // Preenche o formulário
+    document.getElementById('travel-date').value = requestToEdit.travelDate;
+    document.getElementById('appointment-time').value = requestToEdit.appointmentTime;
+    document.getElementById('patient-name').value = requestToEdit.patientName;
+    document.getElementById('city').value = requestToEdit.city;
+    document.getElementById('location').value = requestToEdit.location;
+    document.getElementById('transport-type').value = requestToEdit.transportType;
+    document.getElementById('boarding-location').value = requestToEdit.boardingLocation;
+    document.getElementById('observations').value = requestToEdit.observations;
+
+    // Preenche acompanhantes
+    requestToEdit.companions.forEach((name, index) => {
+        addCompanionField(name, index + 1);
+    });
+
+    function addCompanionField(name = '', count) {
+        const companionDiv = document.createElement('div');
+        companionDiv.className = 'flex items-center gap-4';
+        companionDiv.innerHTML = `
+            <div class="flex-grow">
+                <input type="text" name="companion-${count}" value="${name}" placeholder="Nome do Acompanhante ${count}" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg">
+            </div>
+            <button type="button" class="remove-companion-btn flex-shrink-0 text-red-500 p-2 rounded-full hover:bg-red-100"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+        `;
+        companionsContainer.appendChild(companionDiv);
+    }
+    
+    addCompanionBtn.addEventListener('click', () => {
+        const companionCount = companionsContainer.children.length + 1;
+        addCompanionField('', companionCount);
+    });
+    
+    companionsContainer.addEventListener('click', (e) => {
+        if (e.target.closest('.remove-companion-btn')) {
+            e.target.closest('.flex').remove();
+        }
+    });
+
+    // Salva o formulário
+    travelForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(travelForm);
+        const companions = Array.from(document.querySelectorAll('#companions-container input')).map(input => input.value).filter(Boolean);
+        
+        const updatedRequest = {
+            ...requestToEdit, // Mantém ID e status
+            travelDate: formData.get('travel-date'),
+            appointmentTime: formData.get('appointment-time'),
+            patientName: formData.get('patient-name'),
+            city: formData.get('city'),
+            location: formData.get('location'),
+            transportType: formData.get('transport-type'),
+            boardingLocation: formData.get('boarding-location'),
+            observations: formData.get('observations'),
+            companions: companions,
+        };
+        
+        const requestIndex = allRequests.findIndex(req => req.id === requestId);
+        allRequests[requestIndex] = updatedRequest;
+        localStorage.setItem(REQUESTS_KEY, JSON.stringify(allRequests));
+        
+        alert('Solicitação atualizada com sucesso!');
+        window.location.href = 'solicitacoes_pendentes.html';
+    });
+
+    // Adicione a lógica de autocomplete de cidades e menu aqui se necessário
+});
+</script>
+</body>
+</html>
