@@ -13,62 +13,10 @@
         .autocomplete-suggestion { padding: 10px; cursor: pointer; }
         .autocomplete-suggestion:hover { background-color: #f0f0f0; }
         .modal { transition: opacity 0.25s ease; }
-        /* Estilos de impressão */
         @media print {
-            body { visibility: hidden !important; }
-            #print-iframe {
-                visibility: visible !important;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: white;
-            }
-            #print-iframe body {
-                visibility: visible !important;
-                background: white;
-                font-family: 'Inter', sans-serif;
-            }
-            #print-iframe .document-container {
-                padding: 2rem;
-                color: #000;
-            }
-            #print-iframe .header h1 {
-                font-size: 1.5rem;
-                font-weight: bold;
-                text-align: center;
-                margin-bottom: 1rem;
-            }
-            #print-iframe .details-box {
-                border: 1px solid #000;
-                padding: 1rem;
-                margin-bottom: 1.5rem;
-                border-radius: 0.5rem;
-            }
-            #print-iframe .details-box strong {
-                color: #000;
-            }
-            #print-iframe table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 1rem;
-            }
-            #print-iframe th, #print-iframe td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-            #print-iframe th {
-                background-color: #f2f2f2;
-            }
-            #print-iframe .section-title {
-                font-size: 1.25rem;
-                font-weight: bold;
-                margin-bottom: 1rem;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 0.5rem;
-            }
+            body * { visibility: hidden; }
+            #print-iframe, #print-iframe * { visibility: visible; }
+            #print-iframe { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
         }
     </style>
 </head>
@@ -142,19 +90,19 @@
 </div>
 
 <div id="view-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
-    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" id="view-modal-content">
-        </div>
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" id="view-modal-content">
+    </div>
 </div>
 
 <div id="delete-confirm-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
-    <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
-        <p class="text-gray-600 mb-6">Tem a certeza de que deseja excluir este roteiro? Os pacientes voltarão para a lista de pendentes.</p>
-        <div class="flex justify-center gap-4">
-            <button id="cancel-delete-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300">Cancelar</button>
-            <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Excluir</button>
-        </div>
-    </div>
+    <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar Exclusão</h3>
+        <p class="text-gray-600 mb-6">Tem a certeza de que deseja excluir este roteiro? Os pacientes voltarão para a lista de pendentes.</p>
+        <div class="flex justify-center gap-4">
+            <button id="cancel-delete-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-300">Cancelar</button>
+            <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Excluir</button>
+        </div>
+    </div>
 </div>
 
 <iframe id="print-iframe" style="display:none;"></iframe>
@@ -190,6 +138,7 @@
         let allRequests = [];
         let itineraryToDeleteId = null;
         let db;
+        let appId;
 
         const toggleMenu = () => {
             sidebar.classList.toggle('-translate-x-full');
@@ -337,50 +286,53 @@
 
             let patientRows = patientsInItinerary.map(p => `
                 <tr>
-                    <td class="p-2 border border-gray-400 text-sm">${p.patientName}</td>
-                    <td class="p-2 border border-gray-400 text-sm">${p.appointmentTime}</td>
-                    <td class="p-2 border border-gray-400 text-sm">${p.city} (${p.location})</td>
-                    <td class="p-2 border border-gray-400 text-sm">${p.boardingLocation}</td>
-                    <td class="p-2 border border-gray-400 text-sm">${p.companions.length > 0 ? p.companions.join(', ') : 'Nenhum'}</td>
-                    <td class="p-2 border border-gray-400 text-sm">${p.observations || 'Nenhuma'}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">${p.patientName}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">${p.appointmentTime}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">${p.city} (${p.location})</td>
+                    <td style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">${p.boardingLocation}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">${p.companions.length > 0 ? p.companions.join(', ') : 'Nenhum'}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">${p.observations || 'Nenhuma'}</td>
                 </tr>
             `).join('');
 
             return `
-                <div class="document-container">
-                    <header class="header text-center mb-6">
-                        <h1 class="text-xl font-bold">Roteiro de Viagem</h1>
-                        <p class="text-sm">TFD Paraguaçu</p>
-                    </header>
-                    
-                    <div class="details-box mb-6 border border-gray-400 p-4 rounded-lg">
-                        <div class="flex justify-between items-center mb-2">
-                             <p class="text-lg font-bold text-blue-600">Data da Viagem: <span class="font-normal text-black">${formattedDate}</span></p>
-                             <p class="text-lg font-bold text-blue-600">Hora de Saída: <span class="font-normal text-black">${itinerary.time}</span></p>
+                <div style="padding: 1.5rem; color: #000; font-family: 'Times New Roman', Times, serif;">
+                    <header style="display: flex; align-items: center; border-bottom: 1px solid #000; padding-bottom: 15px; margin-bottom: 15px;">
+                        <img src="Brasão_de_Paraguaçu_Pta.jpg" alt="Brasão de Paraguaçu Paulista" style="width: 80px; height: auto; margin-right: 15px;">
+                        <div style="text-align: center; width: 100%;">
+                            <h1 style="font-size: 16px; font-weight: bold; margin: 0;">SECRETARIA MUNICIPAL DE SAÚDE</h1>
+                            <h2 style="font-size: 14px; font-weight: bold; margin: 0;">PARAGUAÇU PAULISTA</h2>
                         </div>
-                        <p><strong>Tipo de Transporte:</strong> ${itinerary.transportType}</p>
-                        <p><strong>Veículo:</strong> ${itinerary.vehicle}</p>
-                        <p><strong>Motorista:</strong> ${itinerary.driver}</p>
+                    </header>
+
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="font-size: 14px; font-weight: bold; text-decoration: underline; margin: 0;">ROTEIRO DE VIAGEM</h3>
+                    </div>
+                    
+                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 20px; font-size: 13px;">
+                        <p style="margin: 2px 0;"><strong>Data da Viagem:</strong> ${formattedDate}</p>
+                        <p style="margin: 2px 0;"><strong>Hora de Saída:</strong> ${itinerary.time}</p>
+                        <p style="margin: 2px 0;"><strong>Veículo:</strong> ${itinerary.vehicle}</p>
+                        <p style="margin: 2px 0;"><strong>Motorista:</strong> ${itinerary.driver}</p>
+                        <p style="margin: 2px 0;"><strong>Tipo de Transporte:</strong> ${itinerary.transportType}</p>
                     </div>
 
-                    <h2 class="section-title text-lg font-semibold mb-4">Lista de Pacientes</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="bg-gray-100">
-                                    <th class="p-2 border border-gray-400">Paciente</th>
-                                    <th class="p-2 border border-gray-400">Hora da Consulta</th>
-                                    <th class="p-2 border border-gray-400">Destino</th>
-                                    <th class="p-2 border border-gray-400">Local de Embarque</th>
-                                    <th class="p-2 border border-gray-400">Acompanhantes</th>
-                                    <th class="p-2 border border-gray-400">Observações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${patientRows}
-                            </tbody>
-                        </table>
-                    </div>
+                    <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">LISTA DE PACIENTES</h4>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2; text-align: left;">
+                                <th style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">Paciente</th>
+                                <th style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">Hora Consulta</th>
+                                <th style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">Destino</th>
+                                <th style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">Embarque</th>
+                                <th style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">Acompanhantes</th>
+                                <th style="border: 1px solid #ccc; padding: 6px; font-size: 12px;">Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${patientRows}
+                        </tbody>
+                    </table>
                 </div>
             `;
         }
@@ -394,84 +346,27 @@
 
             const iframe = printIframe;
             const doc = iframe.contentWindow.document;
+
             doc.open();
             doc.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <title>Roteiro de Viagem</title>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-                    <script src="https://cdn.tailwindcss.com"></script>
-                    <style>
-                        body { font-family: 'Inter', sans-serif; }
-                        @media print {
-                            body { visibility: hidden !important; }
-                            #print-iframe {
-                                visibility: visible !important;
-                                position: absolute;
-                                left: 0;
-                                top: 0;
-                                width: 100%;
-                                height: 100%;
-                                background: white;
-                            }
-                            #print-iframe body {
-                                visibility: visible !important;
-                                background: white;
-                                font-family: 'Inter', sans-serif;
-                            }
-                            #print-iframe .document-container {
-                                padding: 2rem;
-                                color: #000;
-                            }
-                            #print-iframe .header h1 {
-                                font-size: 1.5rem;
-                                font-weight: bold;
-                                text-align: center;
-                                margin-bottom: 1rem;
-                            }
-                            #print-iframe .details-box {
-                                border: 1px solid #000;
-                                padding: 1rem;
-                                margin-bottom: 1.5rem;
-                                border-radius: 0.5rem;
-                            }
-                            #print-iframe .details-box strong {
-                                color: #000;
-                            }
-                            #print-iframe table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                margin-top: 1rem;
-                            }
-                            #print-iframe th, #print-iframe td {
-                                border: 1px solid #ddd;
-                                padding: 8px;
-                                text-align: left;
-                            }
-                            #print-iframe th {
-                                background-color: #f2f2f2;
-                            }
-                            #print-iframe .section-title {
-                                font-size: 1.25rem;
-                                font-weight: bold;
-                                margin-bottom: 1rem;
-                                border-bottom: 1px solid #ccc;
-                                padding-bottom: 0.5rem;
-                            }
-                        }
-                    </style>
                 </head>
-                <body>
+                <body style="margin: 0;">
                     ${printContent}
                 </body>
                 </html>
             `);
             doc.close();
 
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
+            iframe.onload = function() {
+                setTimeout(function() { // Adiciona um pequeno delay para garantir a renderização
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                }, 500);
+            };
         }
 
         async function deleteItinerary() {
@@ -480,9 +375,9 @@
             
             try {
                 const batch = writeBatch(db);
-                batch.delete(doc(db, `artifacts/${window.appId}/public/data/itineraries`, itineraryToDeleteId));
+                batch.delete(doc(db, `artifacts/${appId}/public/data/itineraries`, itineraryToDeleteId));
                 itinerary.patientIds.forEach(patientId => {
-                    batch.update(doc(db, `artifacts/${window.appId}/public/data/travelRequests`, patientId), { status: "Pendente" });
+                    batch.update(doc(db, `artifacts/${appId}/public/data/travelRequests`, patientId), { status: "Pendente" });
                 });
                 await batch.commit();
             } catch (error) {
@@ -522,7 +417,7 @@
 
         async function initializeFirebase() {
             try {
-                window.appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'tfd-paraguacu-paulista-local';
                 const firebaseConfig = typeof __firebase_config !== 'undefined' 
                     ? JSON.parse(__firebase_config) 
                     : {
@@ -543,8 +438,8 @@
                     await signInAnonymously(auth);
                 }
                 
-                const itinerariesCollection = collection(db, `artifacts/${window.appId}/public/data/itineraries`);
-                const requestsCollection = collection(db, `artifacts/${window.appId}/public/data/travelRequests`);
+                const itinerariesCollection = collection(db, `artifacts/${appId}/public/data/itineraries`);
+                const requestsCollection = collection(db, `artifacts/${appId}/public/data/travelRequests`);
 
                 onSnapshot(itinerariesCollection, (snapshot) => {
                     allItineraries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
